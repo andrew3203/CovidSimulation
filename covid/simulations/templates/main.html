@@ -3,8 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <title>Covid-19 distribution</title>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'simulation/style.css' %}">
 </head>
 <body>
-    <b>HELLO WORD</b>
+<nav class="navbar navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">Covid-19 Simulations</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+          </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                  <a class="nav-item nav-link active" href="#">About project <span class="sr-only">(current)</span></a>
+                  <a class="nav-item nav-link" href="#">Simulations</a>
+                  <a class="nav-item nav-link" href="#">Documentation</a>
+                  <a class="nav-item nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Sign up / Sign in</a>
+            </div>
+      </div>
+</nav>
+    <div class="container pt-4">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#covid" role="tab" aria-controls="covid" aria-selected="true">COVID-19 Simulations</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#news" role="tab" aria-controls="news" aria-selected="false">Actual news</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#maps" role="tab" aria-controls="maps" aria-selected="false">Maps</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#resources" role="tab" aria-controls="resources" aria-selected="false">Resources</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="covid" role="tabpanel" aria-labelledby="home-tab">
+                <div class="pt-3">
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                </div>
+            </div>
+            <div class="tab-pane fade" id="news" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="pt-3">
+                    It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.
+                </div>
+            </div>
+            <div class="tab-pane fade" id="maps" role="tabpanel" aria-labelledby="contact-tab">
+                <div class="pt-3">
+                    Contrary to popular belief, Lorem Ipsum is not simply random text.
+                </div>
+            </div>
+            <div class="tab-pane fade" id="resources" role="tabpanel" aria-labelledby="contact-tab">
+                <div class="pt-3">
+                    The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
