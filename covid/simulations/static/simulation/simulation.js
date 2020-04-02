@@ -1,20 +1,28 @@
-var canvas = document.getElementById('liner');
-var ctx = canvas.getContext('2d');
-var pi = Math.PI;
+let canvas = document.getElementById('liner');
+let ctx = canvas.getContext('2d');
 
-var x = 100;
-var v = -1;
-function drawDot(){
-    ctx.clearRect(0,0, 800, 50);
+let pi = Math.PI;
+let WIDTH = 800;
+let HEIGHT = 50;
+let R = 10;
+let V = 1;
+let X0 = 100;
+
+
+function drawDot(x){
+    ctx.clearRect(0,0, WIDTH, HEIGHT);
     ctx.beginPath();
-    ctx.fillStyle="pink";
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "#40D624";
+    ctx.fillStyle="#40D624";
     ctx.arc(x, 25, 10, 0, 2*pi);
     ctx.stroke();
     ctx.fill();
-    timer = setTimeout(drawDot, 15);
-    x+=v;
-    if((x === 800 - 10) || (x === 10)){
-        v *= -1;
+    timer = setTimeout(function(){drawDot(x); }, 8);
+    x += V;
+    if((x === WIDTH - R) || (x === R)){
+        V *= -1;
     }
 }
-drawDot();
+drawDot(X0+100);
+
