@@ -1,4 +1,4 @@
-//import {randomColor} from './utils'
+//import randomColor from "./utils";
 
 const canvas = document.querySelector('canvas');
 const c = canvas.getContext('2d');
@@ -12,10 +12,11 @@ const mouse = {
 };
 
 const colors = {
-    sick: '#B72E3E' ,
-    health: '#259238',
-    recover: '#B939D3'
+    'sick': ['sick', '#B72E3E'],
+    'health': ['health', '#259238'],
+    'recover': ['recover', '#B939D3'],
 };
+
 function randomIntFromRange(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min)
 }
@@ -76,12 +77,12 @@ function resolveCollision(particle, otherParticle) {
 
 
 // Objects
-function Particle(x, y, radius, color) {
+function Particle(x, y, velocity_x, velocity_y, radius, color) {
     this.x = x;
     this.y = y;
     this.velocity = {
-      x: Math.random() -0.5,
-      y: Math.random() - 0.5
+      x: velocity_x,
+      y: velocity_y
     };
     this.radius = radius;
     this.color = color;
@@ -91,19 +92,23 @@ function Particle(x, y, radius, color) {
   this.draw = () => {
     c.beginPath();
     c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-    c.fillStyle = this.color;
+    c.fillStyle = this.color[1];
     c.fill();
     c.closePath();
   };
 
   this.update = (partiales) => {
-    this.draw();
 
     for(let i = 0; i < partiales.length; i++){
       if(this === particles[i]) continue;
       if(distance(this.x, this.y, particles[i].x, particles[i].y) - this.radius * 2 < 0){
           resolveCollision(this, partiales[i]);
+          if((partiales[i].color[0] === 'sick' && this.color[0] === 'health') || (partiales[i].color[0] === 'health' && this.color[0] === 'sick')){
+              partiales[i].color = colors['sick'];
+              this.color = colors['sick'];
+          }
       }
+      this.draw();
     }
     if(this.x - this.radius <= 0 || this.x + this.radius >= canvas.width){
       this.velocity.x = -this.velocity.x;
@@ -118,27 +123,39 @@ function Particle(x, y, radius, color) {
 
 }
 
+
 // Implementation
 let particles;
-function init() {
+const AMOUNT = 6;
+function initLinerSimulation1() {
   particles = [];
+  let radius, velocity_x, velocity_y, x, y, color;
 
-  for (let i = 0; i < 4; i++) {
-      const radius = 10;
-      let x = randomIntFromRange(radius, canvas.width - radius);
-      let y = randomIntFromRange(radius, canvas.height - radius);
-      const color = 'blue';
-
-      if( i !== 0){
-        for(let j = 0; j < particles.length; j++){
-          if(distance(x, y, particles[j].x, particles[j].y) - radius * 2 < 0){
-            x = randomIntFromRange(radius, canvas.width - radius);
-            y = randomIntFromRange(radius, canvas.height - radius);
-            j = -1;
-          }
-        }
+  for (let i = 0; i < AMOUNT; i++) {
+      if(i === 0){
+          radius = 10;
+          velocity_x = 1.5;
+          velocity_y = 0;
+          x = 50;
+          y = 25;
+          color = colors['sick'];
       }
-      particles.push(new Particle(x, y, radius, color));
+      else {
+          radius = 10;
+          velocity_x = -0.08;
+          velocity_y = 0;
+          x = 50 + i*canvas.width/AMOUNT;
+          y = 25;
+          color = colors['health'];
+          for(let j = 0; j < particles.length; j++){
+              if(distance(x, y, particles[j].x, particles[j].y) - radius * 2 < 0){
+                  x = randomIntFromRange(radius, canvas.width - radius);
+                  y = randomIntFromRange(radius, canvas.height - radius);
+                  j = -1;
+              }
+          }
+      }
+      particles.push(new Particle(x, y, velocity_x, velocity_y, radius, color));
   }
 }
 
@@ -153,7 +170,7 @@ function animate() {
 
 }
 
-init();
+initLinerSimulation1();
 animate();
 
 
