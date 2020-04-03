@@ -172,5 +172,3 @@ function animate() {
 
 initLinerSimulation1();
 animate();
-
-
