@@ -95,7 +95,7 @@ function resolveCollision(particle, otherParticle) {
 // Objects
 class Particle {
 
-    constructor(x, y, velocity_x, velocity_y, radius, color, c){
+    constructor(x, y, velocity_x, velocity_y, radius, color, c , frame){
         this.x = x;
         this.y = y;
         this.velocity = {
@@ -104,8 +104,11 @@ class Particle {
         };
         this.radius = radius;
         this.color = color;
+
         this.mass = 1;
+
         this.c = c;
+        this.frame = frame;
 
     }
 
@@ -127,10 +130,10 @@ class Particle {
     }
 
     move(){
-        if(this.x - this.radius <= 0 || this.x + this.radius >= frame1.width){
+        if(this.x - this.radius <= 0 || this.x + this.radius >= this.frame.width){
             this.velocity.x = -this.velocity.x;
         }
-        if(this.y - this.radius <= 0 || this.y + this.radius >= frame1.height){
+        if(this.y - this.radius <= 0 || this.y + this.radius >= this.frame.height){
             this.velocity.y = -this.velocity.y;
         }
 
@@ -154,8 +157,8 @@ class Particle {
 
 class RecoveredParticle extends Particle{
 
-    constructor(x, y, velocity_x, velocity_y, radius, color, c) {
-        super(x, y, velocity_x, velocity_y, radius, color, c);
+    constructor(x, y, velocity_x, velocity_y, radius, color, c, frame) {
+        super(x, y, velocity_x, velocity_y, radius, color, c, frame);
         this.live_time = randomIntFromRange(2000, 3200);
         this.time = undefined;
         if(this.color[0] === 'sick'){
@@ -191,6 +194,7 @@ class RecoveredParticle extends Particle{
     }
 
 }
+
 
 // Implementation
 class Simulations{
@@ -236,7 +240,7 @@ class Simulations{
 
                 this.resolveCollisionInit(x, y, radius);
             }
-            this.objects.push(new this.Object(x, y, velocity_x, velocity_y, radius, color, this.c));
+            this.objects.push(new this.Object(x, y, velocity_x, velocity_y, radius, color, this.c, this.frame));
         }
     }
 
@@ -262,13 +266,13 @@ class Simulations{
             }
             this.resolveCollisionInit(x, y, radius);
 
-            this.objects.push(new this.Object(x, y, velocity_x, velocity_y, radius, color, this.c));
+            this.objects.push(new this.Object(x, y, velocity_x, velocity_y, radius, color, this.c, this.frame));
         }
     }
 }
-let liner_simulate = new Simulations('simulation1', Particle, frame1);
-liner_simulate.linerInit();
-liner_simulate.linerInit();
+let liner_simulate = new Simulations('simulation2', Particle, frame2);
+liner_simulate.squareInit();
+
 let c = liner_simulate.c;
 // Animation Loop
 function animate(particles, frame) {
