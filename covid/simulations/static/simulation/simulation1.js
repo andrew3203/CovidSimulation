@@ -257,7 +257,7 @@ class Simulations{
             velocity_x = randomFloatFromRange(2, 3);
             velocity_y = randomFloatFromRange(2, 3);
             x = randomIntFromRange(radius, this.frame.width - radius);
-            y = randomIntFromRange(radius, this.frame.width - radius);
+            y = randomIntFromRange(radius, this.frame.height - radius);
 
             if (i <= _sicked_amount) {
                 color = colors['sick'];
@@ -270,7 +270,7 @@ class Simulations{
         }
     }
 }
-let liner_simulate = new Simulations('simulation2', Particle, frame2);
+let liner_simulate = new Simulations('simulation1', Particle, frame2);
 liner_simulate.squareInit();
 
 let c = liner_simulate.c;
