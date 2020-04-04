@@ -4,10 +4,12 @@ const frame1 = {
     'width': 800,
     'height': 50,
 };
+
 const frame2 = {
     'width': 800,
     'height': 400,
 };
+const RARIUS = 10;
 
 const colors = {
     'sick': ['sick', '#B72E3E'],
@@ -142,15 +144,15 @@ class Particle {
     }
 
     update(particles){
-      for(let i = 0; i < particles.length; i++){
-        if(this === particles[i]) continue;
-        if(distance(this.x, this.y, particles[i].x, particles[i].y) - this.radius * 2 < 0){
-            resolveCollision(this, particles[i]);
-            this._checkSick(particles[i]);
-        }
-        this.draw();
-      }
-      this.move();
+        for(let i = 0; i < particles.length; i++){
+            if(this === particles[i]) continue;
+            if(distance(this.x, this.y, particles[i].x, particles[i].y) - this.radius * 2 < 0){
+                resolveCollision(this, particles[i]);
+                this._checkSick(particles[i]);
+            }
+            this.draw();
+          }
+          this.move();
     }
 
 }
@@ -159,7 +161,7 @@ class RecoveredParticle extends Particle{
 
     constructor(x, y, velocity_x, velocity_y, radius, color, c, frame) {
         super(x, y, velocity_x, velocity_y, radius, color, c, frame);
-        this.live_time = randomIntFromRange(2000, 3200);
+        this.live_time = randomIntFromRange(2500, 3500);
         this.time = undefined;
         if(this.color[0] === 'sick'){
             this.time = new Date();
@@ -178,12 +180,10 @@ class RecoveredParticle extends Particle{
         if(particle.color[0] === 'sick' && this.color[0] === 'health'){
                 this.color = colors.sick;
                 this.time = new Date();
-                console.log('yes1');
             }
         if(this.color[0] === 'sick' && particle.color[0] === 'health'){
             particle.color = colors.sick;
             particle.time = new Date();
-            console.log('yes2');
         }
 
     }
@@ -198,7 +198,8 @@ class RecoveredParticle extends Particle{
 
 // Implementation
 class Simulations{
-    constructor(element_id, Object, frame) {
+
+    constructor(element_id, Object, frame, amount) {
         this.canvas = document.getElementById(element_id);
         this.c = this.canvas.getContext('2d');
         this.frame = frame;
@@ -208,85 +209,149 @@ class Simulations{
         this.Object = Object;
         this.objects = [];
 
+        this.amount = amount;
+        //this.sicked = 0;
+        //this.recovered = 0;
+        //this.died = 0;
+
+        this.timer = {
+            'run': false,
+            'time': undefined,
+            'live': 12000,
+        };
+
+        this.init();
     }
 
-    resolveCollisionInit(x, y, radius) {
-        for (let j = 0; j < this.objects.length; j++) {
-            if (distance(x, y, this.objects[j].x, this.objects[j].y) - radius * 2 < 0) {
-                x = randomIntFromRange(radius, this.frame.width - radius);
-                y = randomIntFromRange(radius, this.frame.height - radius);
-                j = -1;
-            }
-        }
+    draw(){
+        this.objects.forEach(object => {
+            object.draw();
+        });
     }
 
     linerInit() {
         this.objects = [];
-        let radius = 10,
+        let radius = RARIUS,
             velocity_x, velocity_y = 0,
             x, y = 25,
             color;
 
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < this.amount; i++) {
             if (i === 0) {
-                velocity_x = 2.5;
+                velocity_x = randomFloatFromRange(1, 2);
                 x = 50;
                 color = colors['sick'];
             } else {
-                radius = 10;
-                velocity_x = -0.08;
-                x = 50 + i * 120;
+                velocity_x = -randomFloatFromRange(0.5, 1)/10;
+                x = 50 + i * (this.frame.width - 50)/this.amount;
                 color = colors['health'];
 
-                this.resolveCollisionInit(x, y, radius);
+
             }
             this.objects.push(new this.Object(x, y, velocity_x, velocity_y, radius, color, this.c, this.frame));
         }
+
+        this.draw();
     }
 
     squareInit() {
         this.objects = [];
-        let radius = 10,
+        let radius = RARIUS,
             velocity_x, velocity_y,
             x, y,
             color;
 
-        let _sicked_amount = randomIntFromRange(0, 4);
+        let _sicked_amount = randomIntFromRange(0, 3);
 
-        for (let i = 0; i < 6; i++) {
-            velocity_x = randomFloatFromRange(2, 3);
-            velocity_y = randomFloatFromRange(2, 3);
-            x = randomIntFromRange(radius, this.frame.width - radius);
-            y = randomIntFromRange(radius, this.frame.height - radius);
-
+        for (let i = 0; i < this.amount; i++) {
             if (i <= _sicked_amount) {
                 color = colors['sick'];
             } else {
                 color = colors['health'];
             }
-            this.resolveCollisionInit(x, y, radius);
+
+            velocity_x = randomFloatFromRange(0, 2.5) - 1.25;
+            velocity_y = randomFloatFromRange(0, 2.5) - 1.25;
+            x = randomIntFromRange(radius, this.frame.width - radius);
+            y = randomIntFromRange(radius, this.frame.height - radius);
+
+            for (let j = 0; j < this.objects.length; j++) {
+                if (distance(x, y, this.objects[j].x, this.objects[j].y) - radius * 2 < 0) {
+                    x = randomIntFromRange(radius, this.frame.width - radius);
+                    y = randomIntFromRange(radius, this.frame.height - radius);
+                    j = -1;
+                }
+            }
 
             this.objects.push(new this.Object(x, y, velocity_x, velocity_y, radius, color, this.c, this.frame));
         }
+
+        this.draw();
+    }
+
+    init(){
+        if(this.frame.height <= 70){
+            this.linerInit();
+        }
+        else {
+            this.squareInit();
+        }
+    }
+
+    update(){
+        if(!this.timer.run){
+            this.timer.run = true;
+            this.timer.time = new Date();
+        }
+
+        this.c.clearRect(0, 0, this.frame.width, this.frame.height);
+        this.objects.forEach(object => {
+            object.update(this.objects)
+        });
+    }
+    checkTime(){
+        let current = new Date();
+        return (current - this.timer.time - this.timer.live >= 0)
     }
 }
-let liner_simulate = new Simulations('simulation1', RecoveredParticle, frame1);
-liner_simulate.linerInit();
+let simulations = [];
+let liner = new Simulations('simulation1', Particle, frame1, 8);
+let recovered_simulation = new Simulations('simulation2', RecoveredParticle, frame1, 8);
+let square_simulation = new Simulations('simulation3', RecoveredParticle, frame2, 70);
 
-let c = liner_simulate.c;
+
+$(document).ready(function(){
+    $("#s1, #s2, #s3").click(function(){
+        if($(this).text() === 'Start'){
+            let obj;
+            switch ($(this).attr('id')) {
+                case 's1': obj = liner; break;
+                case 's2': obj = recovered_simulation; break;
+                case 's3': obj = square_simulation; break;
+            }
+            simulations.push(obj);
+            $(this).text("Stop") ;
+        }
+        else{
+            simulations[0].timer.run = false;
+            simulations.pop();
+            $(this).text("Start") ;
+        }
+    });
+});
 // Animation Loop
-function animate(particles, frame) {
-  requestAnimationFrame(function () {
-        return animate(particles, frame);
-  });
-  c.clearRect(0, 0, frame.width, frame.height);
+function animate() {
+  requestAnimationFrame(animate);
 
-  particles.forEach(particle => {
-    particle.update(particles)
+  simulations.forEach(simulation => {
+    simulation.update();
+    if(simulation.checkTime()){
+        simulations[0].timer.run = false;
+        simulations.pop();
+    }
   });
 }
 
-
-animate(liner_simulate.objects, liner_simulate.frame);
+animate();
 
 

@@ -48,10 +48,17 @@
                 <div class="row pt-2 pb-2">
                     <div class="col-1"></div>
                     <canvas id="simulation1"></canvas>
+                    <button id="s1">Start</button>
                 </div>
                  <div class="row pt-2 pb-2">
                     <div class="col-1"></div>
                     <canvas id="simulation2"></canvas>
+                     <button id="s2">Start</button>
+                </div>
+                <div class="row pt-2 pb-2">
+                    <div class="col-1"></div>
+                    <canvas id="simulation3"></canvas>
+                    <button id="s3">Start</button>
                 </div>
             </div>
             <div class="tab-pane fade" id="news" role="tabpanel" aria-labelledby="profile-tab">
@@ -72,6 +79,6 @@
         </div>
     </div>
 
-<script type="module" src="{% static 'simulation/simulation1.js' %}" ></script>
+<script src="{% static 'simulation/simulation1.js' %}" ></script>
 </body>
 </html>
