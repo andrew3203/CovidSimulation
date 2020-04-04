@@ -270,8 +270,8 @@ class Simulations{
         }
     }
 }
-let liner_simulate = new Simulations('simulation1', Particle, frame2);
-liner_simulate.squareInit();
+let liner_simulate = new Simulations('simulation1', RecoveredParticle, frame1);
+liner_simulate.linerInit();
 
 let c = liner_simulate.c;
 // Animation Loop
