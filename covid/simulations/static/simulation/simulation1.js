@@ -193,7 +193,7 @@ class RecoveredParticle extends Particle{
 }
 
 // Implementation
-class Simulation{
+class Simulations{
     constructor(element_id, Object, frame) {
         this.canvas = document.getElementById(element_id);
         this.c = this.canvas.getContext('2d');
@@ -205,6 +205,7 @@ class Simulation{
         this.objects = [];
 
     }
+
     resolveCollisionInit(x, y, radius) {
         for (let j = 0; j < this.objects.length; j++) {
             if (distance(x, y, this.objects[j].x, this.objects[j].y) - radius * 2 < 0) {
@@ -216,6 +217,7 @@ class Simulation{
     }
 
     linerInit() {
+        this.objects = [];
         let radius = 10,
             velocity_x, velocity_y = 0,
             x, y = 25,
@@ -239,6 +241,7 @@ class Simulation{
     }
 
     squareInit() {
+        this.objects = [];
         let radius = 10,
             velocity_x, velocity_y,
             x, y,
@@ -263,81 +266,11 @@ class Simulation{
         }
     }
 }
-let particles;
-
-const canvas = document.getElementById('simulation1');
-const c = canvas.getContext('2d');
-
-function resolveCollisionInit(objects, x, y, radius, frame) {
-    for (let j = 0; j < objects.length; j++) {
-        if (distance(x, y, objects[j].x, objects[j].y) - radius * 2 < 0) {
-            x = randomIntFromRange(radius, frame.width - radius);
-            y = randomIntFromRange(radius, frame.height - radius);
-            j = -1;
-        }
-    }
-}
-
-function linerInit(Example) {
-    canvas.width = frame1.width;
-    canvas.height = frame1.height;
-
-    let objects = [];
-
-    let radius = 10,
-        velocity_x, velocity_y = 0,
-        x, y = 25,
-        color;
-
-    for (let i = 0; i < 6; i++) {
-        if (i === 0) {
-            velocity_x = 2.5;
-            x = 50;
-            color = colors['sick'];
-        } else {
-            radius = 10;
-            velocity_x = -0.08;
-            x = 50 + i * 120;
-            color = colors['health'];
-
-            resolveCollisionInit(objects, x, y, radius, frame1);
-        }
-        objects.push(new Example(x, y, velocity_x, velocity_y, radius, color, c));
-    }
-    particles = objects;
-}
-
-function squareInit(Example) {
-    let objects = [];
-
-    let radius = 10,
-        velocity_x, velocity_y,
-        x, y,
-        color;
-
-    let _sicked = randomIntFromRange(0, 4);
-
-    for (let i = 0; i < 6; i++) {
-        velocity_x = randomFloatFromRange(2, 3);
-        velocity_y = randomFloatFromRange(2, 3);
-        x = randomIntFromRange(radius, frame2.width - radius);
-        y = randomIntFromRange(radius, frame2.width - radius);
-
-        if (i <= _sicked) {
-            color = colors['sick'];
-        } else {
-            color = colors['health'];
-        }
-        resolveCollisionInit(objects, x, y, radius, frame2);
-
-        objects.push(new Example(x, y, velocity_x, velocity_y, radius, color, c));
-    }
-    particles = objects;
-}
-
-
+let liner_simulate = new Simulations('simulation1', Particle, frame1);
+liner_simulate.linerInit();
+liner_simulate.linerInit();
+let c = liner_simulate.c;
 // Animation Loop
-
 function animate(particles, frame) {
   requestAnimationFrame(function () {
         return animate(particles, frame);
@@ -349,10 +282,7 @@ function animate(particles, frame) {
   });
 }
 
-//linerInit(Particle);
-//animate();
-let liner = new Simulation('simulation1', Particle, frame1);
-liner.linerInit();
-animate(liner.objects, liner.frame);
+
+animate(liner_simulate.objects, liner_simulate.frame);
 
 
