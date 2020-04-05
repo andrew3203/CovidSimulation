@@ -1,5 +1,6 @@
 'use strict';
 
+
 const frame1 = {
     'width': 800,
     'height': 50,
@@ -16,7 +17,6 @@ const colors = {
     'health': ['health', '#259238'],
     'recover': ['recover', '#B939D3'],
 };
-
 
 function setPauseOn(interval) {
     let start = new Date();
@@ -195,8 +195,6 @@ class RecoveredParticle extends Particle{
 
 }
 
-
-// Implementation
 class Simulations{
 
     constructor(element_id, Object, frame, amount) {
@@ -238,11 +236,11 @@ class Simulations{
 
         for (let i = 0; i < this.amount; i++) {
             if (i === 0) {
-                velocity_x = randomFloatFromRange(1, 2);
+                velocity_x = 2.5;
                 x = 50;
                 color = colors['sick'];
             } else {
-                velocity_x = -randomFloatFromRange(0.5, 1)/10;
+                velocity_x = -Math.random()/10;
                 x = 50 + i * (this.frame.width - 50)/this.amount;
                 color = colors['health'];
 
@@ -309,36 +307,30 @@ class Simulations{
             object.update(this.objects)
         });
     }
+
     checkTime(){
         let current = new Date();
         return (current - this.timer.time - this.timer.live >= 0)
     }
 }
-let simulations = [];
-let liner = new Simulations('simulation1', Particle, frame1, 8);
-//let recovered_simulation = new Simulations('simulation2', RecoveredParticle, frame1, 8);
-//let square_simulation = new Simulations('simulation3', RecoveredParticle, frame2, 70);
 
+
+
+let simulations = [];
+let liner = new Simulations('2-people-simulation', Particle, frame1, 8);
+simulations.push(liner);
 
 $(document).ready(function(){
-    $("#s1, #s2, #s3").click(function(){
-        if($(this).text() === 'Start'){
-            let obj;
-            switch ($(this).attr('id')) {
-                case 's1': obj = liner; break;
-                //case 's2': obj = recovered_simulation; break;
-               // case 's3': obj = square_simulation; break;
-            }
-            simulations.push(obj);
-            $(this).text("Stop") ;
-        }
-        else{
-            simulations[0].timer.run = false;
-            simulations.pop();
-            $(this).text("Start") ;
-        }
+    $("#box1").click(function(){
+        liner.init();
+        $(document).ready(function(){
+            $('#box1').hide();
+            $("#2-people-simulation").removeClass('fadeout');
+        });
+        simulations.push(liner);
     });
 });
+
 const gui = new dat.GUI();
 
 // Animation Loop
@@ -348,6 +340,11 @@ function animate() {
   simulations.forEach(simulation => {
     simulation.update();
     if(simulation.checkTime()){
+        $(document).ready(function(){
+            $('#box1').show();
+            $("#2-people-simulation").addClass('fadeout');
+        });
+
         simulations[0].timer.run = false;
         simulations.pop();
     }
