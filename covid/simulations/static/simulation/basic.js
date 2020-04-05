@@ -219,7 +219,7 @@ class LifeParticle extends RecoveredParticle{
 
 class Simulations{
 
-    constructor(canvas_id, Object, frame, amount) {
+    constructor(canvas_id, Object, frame, amount, custom=false) {
         this.canvas = document.getElementById(canvas_id);
         this.c = this.canvas.getContext('2d');
         this.frame = frame;
@@ -237,7 +237,7 @@ class Simulations{
         this.timer = {
             'run': false,
             'time': undefined,
-            'live': undefined,
+            'life': undefined,
         };
 
         this.elements = {
@@ -247,7 +247,9 @@ class Simulations{
         this.elements.canvas_id = '#' + canvas_id;
         this.elements.box_id = this.elements.canvas_id + '-box';
 
-        this.init();
+        if(!custom){
+            this.init();
+        }
     }
 
     draw(){
@@ -277,17 +279,23 @@ class Simulations{
         }
 
         this.draw();
-        this.timer.live = 7000;
+        this.timer.life = 7000;
     }
 
-    squareInit() {
+    squareDefaultInit() {
+        let _sicked_amount = randomIntFromRange(0, 3);
+        this.objectsInint(8, 8, -2.5, 2.5, this.amount, 16000, _sicked_amount);
+
+    }
+
+    objectsInint(r1, r2, v1, v2, amount, animating_time, _sicked_amount){
         this.objects = [];
-        let radius = 7,
+        let radius,
             velocity_x, velocity_y,
             x, y,
             color;
 
-        let _sicked_amount = randomIntFromRange(0, 3);
+        this.amount = amount;
 
         for (let i = 0; i < this.amount; i++) {
             if (i <= _sicked_amount) {
@@ -295,9 +303,10 @@ class Simulations{
             } else {
                 color = colors['health'];
             }
+            radius = randomIntFromRange(r1, r2);
 
-            velocity_x = randomFloatFromRange(1, 4.5) - 2.75;
-            velocity_y = randomFloatFromRange(1, 4.5) - 2.75;
+            velocity_x = randomFloatFromRange(v1, v2);
+            velocity_y = randomFloatFromRange(v1, v2);
             x = randomIntFromRange(radius, this.frame.width - radius);
             y = randomIntFromRange(radius, this.frame.height - radius);
 
@@ -313,16 +322,15 @@ class Simulations{
         }
 
         this.draw();
-        this.timer.live = 16000;
+        this.timer.life = animating_time;
     }
-
 
     init(){
         if(this.frame.height <= 70){
             this.linerInit();
         }
         else {
-            this.squareInit();
+            this.squareDefaultInit();
         }
     }
 
@@ -340,7 +348,7 @@ class Simulations{
 
     checkTime(){
         let current = new Date();
-        return (current - this.timer.time - this.timer.live >= 0)
+        return (current - this.timer.time - this.timer.life >= 0)
     }
 }
 
@@ -351,6 +359,8 @@ let liner_covered = new Simulations('liner-covered-simulation', RecoveredParticl
 let square_ = new Simulations('square-simulation', Particle, frame2, 100);
 let square_covered= new Simulations('square-covered-simulation', RecoveredParticle, frame2, 100);
 let lifeless= new Simulations('lifeless-simulation', LifeParticle, frame2, 100);
+
+let custom= new Simulations('custom-simulation', LifeParticle, frame3, 100, true);
 
 let simulations = [
     {
@@ -373,9 +383,44 @@ let simulations = [
         'element': 'lifeless-simulation',
         'obj': lifeless,
     },
+    {
+        'element': 'custom-simulation',
+        'obj': custom,
+    },
 ];
 
-//const gui = new dat.GUI();
+let gui = new dat.GUI({ autoPlace: false });
+
+let customContainer = document.getElementById('controller');
+customContainer.appendChild(gui.domElement);
+
+const controllers = {
+    amount: 100,
+    sicked_amount: 2,
+    animating_time: 15000,
+};
+const parameters = {
+    velocity_x: 2.5,
+    velocity_y: 2.5,
+    radius: 8,
+    radius_random: false,
+    velocity_random: true,
+
+};
+
+let f1 = gui.addFolder('Controllers');
+f1.add(controllers, 'amount', 2, 200);
+f1.add(controllers, 'sicked_amount', 0, 100);
+f1.add(controllers, 'animating_time', 5000, 100000);
+f1.open();
+
+let f2 = gui.addFolder('Parameters');
+f2.add(parameters, 'velocity_x', -10, 10);
+f2.add(parameters, 'velocity_y', -10, 10);
+f2.add(parameters, 'velocity_random');
+f2.add(parameters, 'radius', 4, 50);
+f2.add(parameters, 'radius_random');
+f2.open();
 
 $('.box-replay').click(function(){
     if(animating.length){
