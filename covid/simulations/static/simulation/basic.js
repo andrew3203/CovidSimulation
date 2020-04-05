@@ -8,11 +8,17 @@ const frame2 = {
     'width': 800,
     'height': 400,
 };
+const frame3 = {
+    'width': 800,
+    'height': 800,
+};
+
 const RARIUS = 10;
 const colors = {
     'sick': ['sick', '#B72E3E'],
     'health': ['health', '#259238'],
     'recover': ['recover', '#B939D3'],
+    'dead': ['dead', '#07070E']
 };
 
 function setPauseOn(interval) {
@@ -156,17 +162,17 @@ class RecoveredParticle extends Particle{
 
     constructor(x, y, velocity_x, velocity_y, radius, color, c, frame) {
         super(x, y, velocity_x, velocity_y, radius, color, c, frame);
-        this.live_time = randomIntFromRange(2500, 3500);
-        this.time = undefined;
+        this.time_to_recover = randomIntFromRange(2100, 2500);
+        this.sicked_time = undefined;
         if(this.color[0] === 'sick'){
-            this.time = new Date();
+            this.sicked_time = new Date();
         }
     }
 
     _checkRecovered(){
         let current = new Date();
 
-        if(this.color[0] === 'sick' && (current - this.time - this.live_time) >= 0){
+        if(this.color[0] === 'sick' && (current - this.sicked_time - this.time_to_recover) >= 0){
             this.color = colors.recover;
         }
     }
@@ -174,11 +180,11 @@ class RecoveredParticle extends Particle{
     _checkSick(particle) {
         if(particle.color[0] === 'sick' && this.color[0] === 'health'){
                 this.color = colors.sick;
-                this.time = new Date();
+                this.sicked_time = new Date();
             }
         if(this.color[0] === 'sick' && particle.color[0] === 'health'){
             particle.color = colors.sick;
-            particle.time = new Date();
+            particle.sicked_time = new Date();
         }
 
     }
@@ -186,6 +192,27 @@ class RecoveredParticle extends Particle{
     move() {
         super.move();
         this._checkRecovered()
+    }
+
+}
+
+class LifeParticle extends RecoveredParticle{
+    constructor(x, y, velocity_x, velocity_y, radius, color, c, frame) {
+        super(x, y, velocity_x, velocity_y, radius, color, c, frame);
+        this.time_to_recover = randomIntFromRange(2000, 3500);
+        this.time_to_death = randomIntFromRange(2900, 3500);
+    }
+
+    _checkRecovered() {
+        super._checkRecovered();
+        let current = new Date();
+        if(this.color[0] === 'sick' && (current - this.sicked_time - this.time_to_death) >= 0){
+            this.color = colors.dead;
+            this.velocity.x = 0;
+            this.velocity.y = 0;
+            this.radius = Math.floor(this.radius / 2);
+            this.mass /= 10;
+        }
     }
 
 }
@@ -210,7 +237,7 @@ class Simulations{
         this.timer = {
             'run': false,
             'time': undefined,
-            'live': 12000,
+            'live': undefined,
         };
 
         this.elements = {
@@ -250,11 +277,12 @@ class Simulations{
         }
 
         this.draw();
+        this.timer.live = 7000;
     }
 
     squareInit() {
         this.objects = [];
-        let radius = RARIUS,
+        let radius = 7,
             velocity_x, velocity_y,
             x, y,
             color;
@@ -268,8 +296,8 @@ class Simulations{
                 color = colors['health'];
             }
 
-            velocity_x = randomFloatFromRange(0, 2.5) - 1.25;
-            velocity_y = randomFloatFromRange(0, 2.5) - 1.25;
+            velocity_x = randomFloatFromRange(1, 4.5) - 2.75;
+            velocity_y = randomFloatFromRange(1, 4.5) - 2.75;
             x = randomIntFromRange(radius, this.frame.width - radius);
             y = randomIntFromRange(radius, this.frame.height - radius);
 
@@ -285,7 +313,9 @@ class Simulations{
         }
 
         this.draw();
+        this.timer.live = 16000;
     }
+
 
     init(){
         if(this.frame.height <= 70){
@@ -317,9 +347,10 @@ class Simulations{
 
 let animating = [];
 let liner_ = new Simulations('liner-simulation', Particle, frame1, 8);
-let liner_covered = new Simulations('liner-covered-simulation', Particle, frame1, 8);
+let liner_covered = new Simulations('liner-covered-simulation', RecoveredParticle, frame1, 8);
 let square_ = new Simulations('square-simulation', Particle, frame2, 100);
 let square_covered= new Simulations('square-covered-simulation', RecoveredParticle, frame2, 100);
+let lifeless= new Simulations('lifeless-simulation', LifeParticle, frame2, 100);
 
 let simulations = [
     {
@@ -338,7 +369,13 @@ let simulations = [
         'element': 'square-covered-simulation',
         'obj': square_covered,
     },
+    {
+        'element': 'lifeless-simulation',
+        'obj': lifeless,
+    },
 ];
+
+//const gui = new dat.GUI();
 
 $('.box-replay').click(function(){
     if(animating.length){
@@ -361,7 +398,7 @@ $('.box-replay').click(function(){
 
  });
 
-const gui = new dat.GUI();
+
 
 // Animation Loop
 function animate() {
