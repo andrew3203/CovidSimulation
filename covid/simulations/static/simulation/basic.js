@@ -197,8 +197,8 @@ class RecoveredParticle extends Particle{
 
 class Simulations{
 
-    constructor(element_id, Object, frame, amount) {
-        this.canvas = document.getElementById(element_id);
+    constructor(canvas_id, Object, frame, amount) {
+        this.canvas = document.getElementById(canvas_id);
         this.c = this.canvas.getContext('2d');
         this.frame = frame;
         this.canvas.width = this.frame.width;
@@ -217,6 +217,13 @@ class Simulations{
             'time': undefined,
             'live': 12000,
         };
+
+        this.elements = {
+            'canvas_id': undefined,
+            'box_id': undefined,
+        };
+        this.elements.canvas_id = '#' + canvas_id;
+        this.elements.box_id = this.elements.canvas_id + '-box';
 
         this.init();
     }
@@ -318,20 +325,19 @@ class Simulations{
 
 let simulations = [];
 let liner = new Simulations('2-people-simulation', Particle, frame1, 8);
-simulations.push(liner);
 
 $(document).ready(function(){
-    $("#box1").click(function(){
+    $("#2-people-simulation-box").click(function(){
         liner.init();
         $(document).ready(function(){
-            $('#box1').hide();
-            $("#2-people-simulation").removeClass('fadeout');
+            $(liner.elements.box_id).hide();
+            $(liner.elements.canvas_id).removeClass('fadeout');
         });
         simulations.push(liner);
     });
 });
 
-const gui = new dat.GUI();
+//const gui = new dat.GUI();
 
 // Animation Loop
 function animate() {
@@ -340,13 +346,16 @@ function animate() {
   simulations.forEach(simulation => {
     simulation.update();
     if(simulation.checkTime()){
+        let el = simulations[0];
+        el.timer.run = false;
+        simulations.pop();
+
         $(document).ready(function(){
-            $('#box1').show();
-            $("#2-people-simulation").addClass('fadeout');
+            $(el.elements.box_id).show();
+            $(el.elements.canvas_id).addClass('fadeout');
         });
 
-        simulations[0].timer.run = false;
-        simulations.pop();
+
     }
   });
 }

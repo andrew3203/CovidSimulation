@@ -6,7 +6,7 @@ canvas{
     border: 1px solid #b1b3b5;
 }
 .box-replay{
-    display: none;
+    display: block;
     position: relative;
     right: 40%;
     top: 3px;
