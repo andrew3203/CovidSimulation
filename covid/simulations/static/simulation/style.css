@@ -10,6 +10,7 @@ canvas{
     position: relative;
     right: 40%;
     top: 3px;
+    height: 55px;
 }
 .replay{
     position: relative;

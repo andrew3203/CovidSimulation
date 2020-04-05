@@ -1,17 +1,14 @@
 'use strict';
 
-
 const frame1 = {
     'width': 800,
     'height': 50,
 };
-
 const frame2 = {
     'width': 800,
     'height': 400,
 };
 const RARIUS = 10;
-
 const colors = {
     'sick': ['sick', '#B72E3E'],
     'health': ['health', '#259238'],
@@ -47,12 +44,10 @@ function distance(x1, y1, x2, y2) {
 }
 
 function rotate(velocity, angle) {
-    const rotatedVelocities = {
+    return {
         x: velocity.x * Math.cos(angle) - velocity.y * Math.sin(angle),
         y: velocity.x * Math.sin(angle) + velocity.y * Math.cos(angle)
     };
-
-    return rotatedVelocities;
 }
 
 function resolveCollision(particle, otherParticle) {
@@ -236,8 +231,7 @@ class Simulations{
 
     linerInit() {
         this.objects = [];
-        let radius = RARIUS,
-            velocity_x, velocity_y = 0,
+        let velocity_x, velocity_y = 0,
             x, y = 25,
             color;
 
@@ -250,10 +244,9 @@ class Simulations{
                 velocity_x = -Math.random()/10;
                 x = 50 + i * (this.frame.width - 50)/this.amount;
                 color = colors['health'];
-
-
             }
-            this.objects.push(new this.Object(x, y, velocity_x, velocity_y, radius, color, this.c, this.frame));
+
+            this.objects.push(new this.Object(x, y, velocity_x, velocity_y, RARIUS, color, this.c, this.frame));
         }
 
         this.draw();
@@ -322,44 +315,77 @@ class Simulations{
 }
 
 
+let animating = [];
+let liner_ = new Simulations('liner-simulation', Particle, frame1, 8);
+let liner_covered = new Simulations('liner-covered-simulation', Particle, frame1, 8);
+let square_ = new Simulations('square-simulation', Particle, frame2, 100);
+let square_covered= new Simulations('square-covered-simulation', RecoveredParticle, frame2, 100);
 
-let simulations = [];
-let liner = new Simulations('2-people-simulation', Particle, frame1, 8);
+let simulations = [
+    {
+        'element': 'liner-simulation',
+        'obj': liner_
+    },
+    {
+        'element': 'liner-covered-simulation',
+         'obj': liner_covered
+    },
+    {
+        'element': 'square-simulation',
+         'obj': square_
+    },
+    {
+        'element': 'square-covered-simulation',
+        'obj': square_covered,
+    },
+];
 
-$(document).ready(function(){
-    $("#2-people-simulation-box").click(function(){
-        liner.init();
-        $(document).ready(function(){
-            $(liner.elements.box_id).hide();
-            $(liner.elements.canvas_id).removeClass('fadeout');
-        });
-        simulations.push(liner);
+$('.box-replay').click(function(){
+    if(animating.length){
+        $(animating[0].elements.box_id).show();
+        $(animating[0].elements.canvas_id).addClass('fadeout');
+
+        animating.pop();
+    }
+
+    let canvas_id = $(this).siblings('canvas').attr('id');
+    simulations.forEach(simulate => {
+        if(simulate.element === canvas_id){
+            simulate.obj.init();
+            $(simulate.obj.elements.box_id).hide();
+            $(simulate.obj.elements.canvas_id).removeClass('fadeout');
+            animating.push(simulate.obj);
+        }
     });
-});
 
-//const gui = new dat.GUI();
+
+ });
+
+const gui = new dat.GUI();
 
 // Animation Loop
 function animate() {
   requestAnimationFrame(animate);
 
-  simulations.forEach(simulation => {
-    simulation.update();
-    if(simulation.checkTime()){
-        let el = simulations[0];
-        el.timer.run = false;
-        simulations.pop();
+  animating.forEach(obj => {
+    obj.update();
+
+    if(obj.checkTime()){
+        obj.timer.run = false;
 
         $(document).ready(function(){
-            $(el.elements.box_id).show();
-            $(el.elements.canvas_id).addClass('fadeout');
+            $(obj.elements.box_id).show();
+            $(obj.elements.canvas_id).addClass('fadeout');
         });
 
-
+        animating.pop();
     }
+
   });
 }
 
 animate();
+
+
 
 
