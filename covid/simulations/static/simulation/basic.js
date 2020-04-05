@@ -316,8 +316,8 @@ class Simulations{
 }
 let simulations = [];
 let liner = new Simulations('simulation1', Particle, frame1, 8);
-let recovered_simulation = new Simulations('simulation2', RecoveredParticle, frame1, 8);
-let square_simulation = new Simulations('simulation3', RecoveredParticle, frame2, 70);
+//let recovered_simulation = new Simulations('simulation2', RecoveredParticle, frame1, 8);
+//let square_simulation = new Simulations('simulation3', RecoveredParticle, frame2, 70);
 
 
 $(document).ready(function(){
@@ -326,8 +326,8 @@ $(document).ready(function(){
             let obj;
             switch ($(this).attr('id')) {
                 case 's1': obj = liner; break;
-                case 's2': obj = recovered_simulation; break;
-                case 's3': obj = square_simulation; break;
+                //case 's2': obj = recovered_simulation; break;
+               // case 's3': obj = square_simulation; break;
             }
             simulations.push(obj);
             $(this).text("Stop") ;
@@ -339,6 +339,8 @@ $(document).ready(function(){
         }
     });
 });
+const gui = new dat.GUI();
+
 // Animation Loop
 function animate() {
   requestAnimationFrame(animate);
