@@ -10,7 +10,7 @@ const frame2 = {
 };
 const frame3 = {
     'width': 800,
-    'height': 800,
+    'height': 600,
 };
 
 const RARIUS = 10;
@@ -352,7 +352,6 @@ class Simulations{
     }
 }
 
-
 let animating = [];
 let liner_ = new Simulations('liner-simulation', Particle, frame1, 8);
 let liner_covered = new Simulations('liner-covered-simulation', RecoveredParticle, frame1, 8);
@@ -391,39 +390,79 @@ let simulations = [
 
 let gui = new dat.GUI({ autoPlace: false });
 
+
+function Controller(){
+
+    this.amount = 100;
+    this.sicked_amount = 2;
+    this.animating_time = 15000;
+
+    this.velocity_x = 2.5;
+    this.velocity_y = 2.5;
+    this.radius = 8;
+    this.radius_random = false;
+    this.velocity_random = true;
+
+    this.run = function () {
+        let r1, v1;
+        if(this.velocity_random){
+            v1 = -this.velocity_x;
+        }
+        else {
+            r1 = this.radius;
+        }
+        if(this.radius_random){
+            r1 = 4;
+        }
+        else {
+            r1 = this.radius;
+        }
+
+        custom.objectsInint(r1,
+            this.radius,
+            -this.velocity_x,
+            this.velocity_x,
+            this.amount,
+            this.animating_time,
+            this.sicked_amount);
+        animating.push(custom);
+        $(custom.elements.canvas_id).removeClass('fadeout');
+    };
+    this.pause = function () {
+        if(animating.length){
+            animating[0].timer.run = false;
+            $(animating[0].elements.canvas_id).addClass('fadeout');
+
+            animating.pop();
+        }
+    }
+}
+
 let customContainer = document.getElementById('controller');
 customContainer.appendChild(gui.domElement);
 
-const controllers = {
-    amount: 100,
-    sicked_amount: 2,
-    animating_time: 15000,
-};
-const parameters = {
-    velocity_x: 2.5,
-    velocity_y: 2.5,
-    radius: 8,
-    radius_random: false,
-    velocity_random: true,
-
-};
-
+let controller = new Controller();
 let f1 = gui.addFolder('Controllers');
-f1.add(controllers, 'amount', 2, 200);
-f1.add(controllers, 'sicked_amount', 0, 100);
-f1.add(controllers, 'animating_time', 5000, 100000);
+f1.add(controller, 'amount', 2, 200);
+f1.add(controller, 'sicked_amount', 0, 100);
+f1.add(controller, 'animating_time', 5000, 100000);
 f1.open();
 
 let f2 = gui.addFolder('Parameters');
-f2.add(parameters, 'velocity_x', -10, 10);
-f2.add(parameters, 'velocity_y', -10, 10);
-f2.add(parameters, 'velocity_random');
-f2.add(parameters, 'radius', 4, 50);
-f2.add(parameters, 'radius_random');
+f2.add(controller, 'velocity_x', -10, 10);
+f2.add(controller, 'velocity_y', -10, 10);
+f2.add(controller, 'velocity_random');
+f2.add(controller, 'radius', 4, 50);
+f2.add(controller, 'radius_random');
 f2.open();
+let f3 = gui.addFolder('Active');
+f3.add(controller, 'run');
+f3.add(controller, 'pause');
+f3.open();
 
 $('.box-replay').click(function(){
     if(animating.length){
+        animating[0].timer.run = false;
         $(animating[0].elements.box_id).show();
         $(animating[0].elements.canvas_id).addClass('fadeout');
 
