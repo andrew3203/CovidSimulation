@@ -16,7 +16,7 @@ def send_json(request):
     for i in range(len(mas)):
         data.append({
             'date': mas.index[i],
-            'data': str(mas[i]),
+            'data': str(mas[i]) + '%',
         })
 
     return JsonResponse(data, safe=False)
