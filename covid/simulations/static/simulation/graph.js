@@ -1,3 +1,18 @@
+$(document).ready(function() {
+    $('#plot').click(function () {
+
+    });
+
+
+});
+$.ajax({
+        url: 'http://127.0.0.1:8000/get_hist_data/',
+        dataType: 'json',
+        success: function(jsondata){
+            console.log(jsondata);
+        }
+
+    });
 am4core.ready(function() {
 
     // Themes begin
