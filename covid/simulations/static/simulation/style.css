@@ -29,3 +29,9 @@ canvas{
 .chow-replay-box{
     display: block;
 }
+
+#hist{
+
+    width: 90%;
+    height: 500px;
+}

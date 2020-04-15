@@ -284,11 +284,11 @@ class Simulations{
 
     squareDefaultInit() {
         let _sicked_amount = randomIntFromRange(0, 3);
-        this.objectsInint(8, 8, -2.5, 2.5, this.amount, 16000, _sicked_amount);
+        this.objectsInit(8, 8, -2.5, 2.5, this.amount, 16000, _sicked_amount);
 
     }
 
-    objectsInint(r1, r2, v1, v2, amount, animating_time, _sicked_amount){
+    objectsInit(r1, r2, v1, v2, amount, animating_time, _sicked_amount){
         this.objects = [];
         let radius,
             velocity_x, velocity_y,
@@ -388,7 +388,6 @@ let simulations = [
     },
 ];
 
-let gui = new dat.GUI({ autoPlace: false });
 
 
 function Controller(){
@@ -397,20 +396,13 @@ function Controller(){
     this.sicked_amount = 2;
     this.animating_time = 15000;
 
-    this.velocity_x = 2.5;
-    this.velocity_y = 2.5;
+    this.velocity_start = -2.5;
+    this.velocity_end = 2.5;
     this.radius = 8;
     this.radius_random = false;
-    this.velocity_random = true;
 
     this.run = function () {
-        let r1, v1;
-        if(this.velocity_random){
-            v1 = -this.velocity_x;
-        }
-        else {
-            r1 = this.radius;
-        }
+        let r1;
         if(this.radius_random){
             r1 = 4;
         }
@@ -418,10 +410,11 @@ function Controller(){
             r1 = this.radius;
         }
 
-        custom.objectsInint(r1,
+        custom.objectsInit(
+            r1,
             this.radius,
-            -this.velocity_x,
-            this.velocity_x,
+            this.velocity_start,
+            this.velocity_end,
             this.amount,
             this.animating_time,
             this.sicked_amount);
@@ -438,10 +431,16 @@ function Controller(){
     }
 }
 
+let gui = new dat.GUI({
+    autoPlace: false,
+    load: JSON,
+});
+
 let customContainer = document.getElementById('controller');
 customContainer.appendChild(gui.domElement);
 
 let controller = new Controller();
+
 let f1 = gui.addFolder('Controllers');
 f1.add(controller, 'amount', 2, 200);
 f1.add(controller, 'sicked_amount', 0, 100);
@@ -449,9 +448,8 @@ f1.add(controller, 'animating_time', 5000, 100000);
 f1.open();
 
 let f2 = gui.addFolder('Parameters');
-f2.add(controller, 'velocity_x', -10, 10);
-f2.add(controller, 'velocity_y', -10, 10);
-f2.add(controller, 'velocity_random');
+f2.add(controller, 'velocity_start', -10, 10);
+f2.add(controller, 'velocity_end', -10, 10);
 f2.add(controller, 'radius', 4, 50);
 f2.add(controller, 'radius_random');
 f2.open();
@@ -459,6 +457,8 @@ let f3 = gui.addFolder('Active');
 f3.add(controller, 'run');
 f3.add(controller, 'pause');
 f3.open();
+
+gui.remember(controller);
 
 $('.box-replay').click(function(){
     if(animating.length){
