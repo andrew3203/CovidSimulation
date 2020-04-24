@@ -45,7 +45,7 @@ function sendResp(element) {
 function plot(name) {
     $(document).ready(function() {
         $('#hist').html('');
-        $('#region_name').text(name);
+        $('#region_name').text(name + ":");
         $('#search').val('');
     });
     $.ajax({
