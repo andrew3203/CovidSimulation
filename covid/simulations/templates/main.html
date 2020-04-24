@@ -10,16 +10,15 @@
 </head>
 <body>
 <nav class="navbar navbar-dark bg-dark">
-      <a class="navbar-brand" href="#">Covid-19 Simulations</a>
+      <a class="navbar-brand" href="/">Covid-19 Simulations</a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
           </button>
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-                  <a class="nav-item nav-link active" href="#">About project <span class="sr-only">(current)</span></a>
-                  <a class="nav-item nav-link" href="#">Simulations</a>
-                  <a class="nav-item nav-link" href="#">Documentation</a>
-                  <a class="nav-item nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Sign up / Sign in</a>
+                  <a class="nav-item nav-link active" href="/">Simulations</a>
+                  <a class="nav-item nav-link" href="{% url 'map' %}">Map</a>
+                  <a class="nav-item nav-link" href="#" id="about">About project</a>
             </div>
       </div>
 </nav>
@@ -152,5 +151,6 @@
 <!--main file -->
 <script src="{% static 'simulation/basic.js' %}" type="text/javascript" ></script>
 <script src="{% static 'simulation/graph.js' %}" type="text/javascript" ></script>
+<script src="{% static 'simulation/control.js' %}" type="text/javascript" ></script>
 </body>
 </html>

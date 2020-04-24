@@ -413,7 +413,7 @@ let liner_covered = new Simulations('liner-covered-simulation', RecoveredParticl
 let square_covered= new Simulations('square-covered-simulation', RecoveredParticle, frame2, 120);
 let lifeless = new Simulations('lifeless-simulation', LifeParticle, frame2, 120);
 let quarantine_sim = new Simulations('quarantine-simulation', QuarantineParticle, frame2, 120);
-let custom = new Simulations('custom-simulation', LifeParticle, frame3, 120, true);
+let custom = new Simulations('custom-simulation', QuarantineParticle, frame3, 120, true);
 
 let simulations = [
     {
@@ -450,6 +450,8 @@ function Controller(){
     this.sicked_amount = 2;
     this.animating_time = 15000;
 
+    this.quarantine_lvl = 8;
+
     this.velocity_start = -2.5;
     this.velocity_end = 2.5;
     this.radius = 8;
@@ -471,7 +473,8 @@ function Controller(){
             this.velocity_end,
             this.amount,
             this.animating_time,
-            this.sicked_amount);
+            this.sicked_amount,
+            this.quarantine_lvl);
         animating.push(custom);
         $(custom.elements.canvas_id).removeClass('fadeout');
     };
@@ -506,6 +509,7 @@ f2.add(controller, 'velocity_start', -10, 10);
 f2.add(controller, 'velocity_end', -10, 10);
 f2.add(controller, 'radius', 4, 50);
 f2.add(controller, 'radius_random');
+f2.add(controller, 'quarantine_lvl', 0, 15);
 f2.open();
 
 let f3 = gui.addFolder('Active');
@@ -536,8 +540,6 @@ $('.box-replay').click(function(){
 
 
  });
-
-
 
 // Animation Loop
 function animate() {
