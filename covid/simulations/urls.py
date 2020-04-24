@@ -6,4 +6,5 @@ app_name = 'simulations'
 urlpatterns = [
      path('', views.check_notifications, name='main'),
      path('get_hist_data/', views.send_json, name='hist'),
+     path('map/', views.covid_map, name='map'),
 ]
