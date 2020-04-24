@@ -18,7 +18,8 @@ const colors = {
     'sick': ['sick', '#B72E3E'],
     'health': ['health', '#259238'],
     'recover': ['recover', '#B939D3'],
-    'dead': ['dead', '#07070E']
+    'dead': ['dead', '#07070E'],
+    'qur': ['qur', '#fff722']
 };
 
 function setPauseOn(interval) {
@@ -27,7 +28,6 @@ function setPauseOn(interval) {
     while (true){
         let current = new Date();
         if(current - interval - start >= 0){
-            console.log('yes');
             return 0;
         }
     }
@@ -112,7 +112,6 @@ class Particle {
 
         this.c = c;
         this.frame = frame;
-
     }
 
     draw(){
@@ -155,7 +154,6 @@ class Particle {
           }
           this.move();
     }
-
 }
 
 class RecoveredParticle extends Particle{
@@ -178,11 +176,11 @@ class RecoveredParticle extends Particle{
     }
 
     _checkSick(particle) {
-        if(particle.color[0] === 'sick' && this.color[0] === 'health'){
+        if(particle.color[0] === 'sick' && (this.color[0] === 'health' || this.color[0] ===  'qur')){
                 this.color = colors.sick;
                 this.sicked_time = new Date();
             }
-        if(this.color[0] === 'sick' && particle.color[0] === 'health'){
+        if(this.color[0] === 'sick' && (particle.color[0] === 'health' || particle.color[0] ===  'qur')){
             particle.color = colors.sick;
             particle.sicked_time = new Date();
         }
@@ -193,10 +191,10 @@ class RecoveredParticle extends Particle{
         super.move();
         this._checkRecovered()
     }
-
 }
 
 class LifeParticle extends RecoveredParticle{
+
     constructor(x, y, velocity_x, velocity_y, radius, color, c, frame) {
         super(x, y, velocity_x, velocity_y, radius, color, c, frame);
         this.time_to_recover = randomIntFromRange(2000, 3500);
@@ -214,9 +212,26 @@ class LifeParticle extends RecoveredParticle{
             this.mass /= 10;
         }
     }
-
 }
 
+class QuarantineParticle extends LifeParticle{
+
+    constructor(x, y, velocity_x, velocity_y, radius, color, c, frame, quarantine=false) {
+        super(x, y, velocity_x, velocity_y, radius, color, c, frame);
+        this.quarantine = quarantine;
+    }
+
+    move() {
+        if(this.quarantine){
+            this.velocity.x /= 1.1;
+            this.velocity.y /=1.1;
+
+            this.velocity.x = Math.abs(this.velocity.x) < 0.001 ? 0: this.velocity.x;
+            this.velocity.y = Math.abs(this.velocity.y) < 0.001 ? 0: this.velocity.y;
+        }
+        super.move();
+    }
+}
 class Simulations{
 
     constructor(canvas_id, Object, frame, amount, custom=false) {
@@ -283,46 +298,86 @@ class Simulations{
     }
 
     squareDefaultInit() {
-        let _sicked_amount = randomIntFromRange(0, 3);
-        this.objectsInit(8, 8, -2.5, 2.5, this.amount, 16000, _sicked_amount);
-
+        let _sicked_amount = randomIntFromRange(1, 3);
+        let quarantines = this.Object === QuarantineParticle ? randomIntFromRange(8, 12): 0;
+        this.objectsInit(5, 5, -2, 2, this.amount, 16000, _sicked_amount, quarantines);
     }
 
-    objectsInit(r1, r2, v1, v2, amount, animating_time, _sicked_amount){
+    objectsInit(r1, r2, v1, v2, amount, animating_time, sicked=2, quarantines=0){
+        let quarantines_left = quarantines,
+            sicked_left = sicked;
         this.objects = [];
-        let radius,
-            velocity_x, velocity_y,
-            x, y,
+        let velocity_x, velocity_y,
             color;
 
         this.amount = amount;
 
         for (let i = 0; i < this.amount; i++) {
-            if (i <= _sicked_amount) {
-                color = colors['sick'];
-            } else {
-                color = colors['health'];
-            }
-            radius = randomIntFromRange(r1, r2);
 
-            velocity_x = randomFloatFromRange(v1, v2);
-            velocity_y = randomFloatFromRange(v1, v2);
-            x = randomIntFromRange(radius, this.frame.width - radius);
-            y = randomIntFromRange(radius, this.frame.height - radius);
+            if(quarantines_left > 0) {
+                color = colors['qur'];
+                let nums = this._get_nums(r1, r2, 0, 0, 4 * r2);
+                velocity_x = 0;
+                velocity_y = 0;
+                this.objects.push(new this.Object(nums.x,
+                    nums.y, velocity_x, velocity_y, nums.radius, color, this.c, this.frame, true));
 
-            for (let j = 0; j < this.objects.length; j++) {
-                if (distance(x, y, this.objects[j].x, this.objects[j].y) - radius * 2 < 0) {
-                    x = randomIntFromRange(radius, this.frame.width - radius);
-                    y = randomIntFromRange(radius, this.frame.height - radius);
-                    j = -1;
+                for (let q = 0; q < 4; q++) {
+                    let xx = randomIntFromRange(nums.x - 4 * nums.radius, nums.x + 4 * nums.radius),
+                        yy = randomIntFromRange(nums.y - 4 * nums.radius, nums.y + 4 * nums.radius);
+
+                    let xy = this._check_x_y(xx, yy, nums.radius);
+
+                    this.objects.push(new this.Object(xy['x'],
+                        xy['y'], 0, 0, nums.radius, color, this.c, this.frame, true));
                 }
+                quarantines_left -= 1;
+                i += 4;
             }
-
-            this.objects.push(new this.Object(x, y, velocity_x, velocity_y, radius, color, this.c, this.frame));
+            else {
+                if(sicked_left > 0){
+                    color = colors['sick'];
+                    sicked_left -=1;
+                }
+                else{
+                    color = colors['health'];
+                }
+                 let nums = this._get_nums(r1, r2, v1, v2);
+                 this.objects.push(new this.Object(nums.x,
+                        nums.y,
+                        nums.velocity_x, nums.velocity_y, nums.radius, color, this.c, this.frame));
+            }
         }
 
         this.draw();
         this.timer.life = animating_time;
+    }
+
+    _get_nums(r1, r2, v1, v2, p=0){
+        let radius = randomIntFromRange(r1, r2);
+        let x = randomIntFromRange(radius+p, this.frame.width - radius-p),
+            y = randomIntFromRange(radius+p, this.frame.height - radius-p);
+        let xy = this._check_x_y(x, y, radius);
+
+        return {
+            'radius': radius,
+            'velocity_x': randomFloatFromRange(v1, v2),
+            'velocity_y': randomFloatFromRange(v1, v2),
+            'x': xy['x'],
+            'y': xy['y'],
+        };
+    }
+
+    _check_x_y(x, y, radius){
+        // в случае карантина все равно проверяеться вся область
+         for (let j = 0; j < this.objects.length; j++) {
+             if (distance(x, y, this.objects[j].x, this.objects[j].y) - radius * 2 < 0) {
+                 x = randomIntFromRange(radius, this.frame.width - radius);
+                 y = randomIntFromRange(radius, this.frame.height - radius);
+                 j = -1;
+             }
+         }
+        return {'x': x, 'y': y}
     }
 
     init(){
@@ -355,11 +410,10 @@ class Simulations{
 let animating = [];
 let liner_ = new Simulations('liner-simulation', Particle, frame1, 8);
 let liner_covered = new Simulations('liner-covered-simulation', RecoveredParticle, frame1, 8);
-let square_ = new Simulations('square-simulation', Particle, frame2, 100);
-let square_covered= new Simulations('square-covered-simulation', RecoveredParticle, frame2, 100);
-let lifeless= new Simulations('lifeless-simulation', LifeParticle, frame2, 100);
-
-let custom= new Simulations('custom-simulation', LifeParticle, frame3, 100, true);
+let square_covered= new Simulations('square-covered-simulation', RecoveredParticle, frame2, 120);
+let lifeless = new Simulations('lifeless-simulation', LifeParticle, frame2, 120);
+let quarantine_sim = new Simulations('quarantine-simulation', QuarantineParticle, frame2, 120);
+let custom = new Simulations('custom-simulation', LifeParticle, frame3, 120, true);
 
 let simulations = [
     {
@@ -371,16 +425,16 @@ let simulations = [
          'obj': liner_covered
     },
     {
-        'element': 'square-simulation',
-         'obj': square_
-    },
-    {
         'element': 'square-covered-simulation',
         'obj': square_covered,
     },
     {
         'element': 'lifeless-simulation',
         'obj': lifeless,
+    },
+    {
+        'element': 'quarantine-simulation',
+         'obj': quarantine_sim,
     },
     {
         'element': 'custom-simulation',
@@ -453,6 +507,7 @@ f2.add(controller, 'velocity_end', -10, 10);
 f2.add(controller, 'radius', 4, 50);
 f2.add(controller, 'radius_random');
 f2.open();
+
 let f3 = gui.addFolder('Active');
 f3.add(controller, 'run');
 f3.add(controller, 'pause');
