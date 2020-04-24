@@ -5,6 +5,7 @@ from . import views
 app_name = 'simulations'
 urlpatterns = [
      path('', views.check_notifications, name='main'),
-     path('get_hist_data/', views.send_json, name='hist'),
+     path('get_hist_data/', views.get_hist_data, name='hist'),
+     path('get_all_regions/', views.get_all_regions, name='regions'),
      path('map/', views.covid_map, name='map'),
 ]
