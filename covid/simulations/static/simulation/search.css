@@ -1,0 +1,16 @@
+#hist{
+    height: 500px;
+}
+
+/* Стили для плашки с результатами */
+.search_result {
+	position: absolute;
+	width: 500px;
+	top: 100%;
+	left: 10px;
+	border: 1px solid #ddd;
+	background: #fff;
+	padding: 10px;
+	z-index: 9999;
+	box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}

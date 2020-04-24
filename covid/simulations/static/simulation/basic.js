@@ -4,19 +4,22 @@ const frame1 = {
     'width': 800,
     'height': 50,
 };
-
 const frame2 = {
     'width': 800,
     'height': 400,
 };
-const RARIUS = 10;
+const frame3 = {
+    'width': 800,
+    'height': 600,
+};
 
+const RARIUS = 10;
 const colors = {
     'sick': ['sick', '#B72E3E'],
     'health': ['health', '#259238'],
     'recover': ['recover', '#B939D3'],
+    'dead': ['dead', '#07070E']
 };
-
 
 function setPauseOn(interval) {
     let start = new Date();
@@ -47,12 +50,10 @@ function distance(x1, y1, x2, y2) {
 }
 
 function rotate(velocity, angle) {
-    const rotatedVelocities = {
+    return {
         x: velocity.x * Math.cos(angle) - velocity.y * Math.sin(angle),
         y: velocity.x * Math.sin(angle) + velocity.y * Math.cos(angle)
     };
-
-    return rotatedVelocities;
 }
 
 function resolveCollision(particle, otherParticle) {
@@ -161,17 +162,17 @@ class RecoveredParticle extends Particle{
 
     constructor(x, y, velocity_x, velocity_y, radius, color, c, frame) {
         super(x, y, velocity_x, velocity_y, radius, color, c, frame);
-        this.live_time = randomIntFromRange(2500, 3500);
-        this.time = undefined;
+        this.time_to_recover = randomIntFromRange(2100, 2500);
+        this.sicked_time = undefined;
         if(this.color[0] === 'sick'){
-            this.time = new Date();
+            this.sicked_time = new Date();
         }
     }
 
     _checkRecovered(){
         let current = new Date();
 
-        if(this.color[0] === 'sick' && (current - this.time - this.live_time) >= 0){
+        if(this.color[0] === 'sick' && (current - this.sicked_time - this.time_to_recover) >= 0){
             this.color = colors.recover;
         }
     }
@@ -179,11 +180,11 @@ class RecoveredParticle extends Particle{
     _checkSick(particle) {
         if(particle.color[0] === 'sick' && this.color[0] === 'health'){
                 this.color = colors.sick;
-                this.time = new Date();
+                this.sicked_time = new Date();
             }
         if(this.color[0] === 'sick' && particle.color[0] === 'health'){
             particle.color = colors.sick;
-            particle.time = new Date();
+            particle.sicked_time = new Date();
         }
 
     }
@@ -195,12 +196,31 @@ class RecoveredParticle extends Particle{
 
 }
 
+class LifeParticle extends RecoveredParticle{
+    constructor(x, y, velocity_x, velocity_y, radius, color, c, frame) {
+        super(x, y, velocity_x, velocity_y, radius, color, c, frame);
+        this.time_to_recover = randomIntFromRange(2000, 3500);
+        this.time_to_death = randomIntFromRange(2900, 3500);
+    }
 
-// Implementation
+    _checkRecovered() {
+        super._checkRecovered();
+        let current = new Date();
+        if(this.color[0] === 'sick' && (current - this.sicked_time - this.time_to_death) >= 0){
+            this.color = colors.dead;
+            this.velocity.x = 0;
+            this.velocity.y = 0;
+            this.radius = Math.floor(this.radius / 2);
+            this.mass /= 10;
+        }
+    }
+
+}
+
 class Simulations{
 
-    constructor(element_id, Object, frame, amount) {
-        this.canvas = document.getElementById(element_id);
+    constructor(canvas_id, Object, frame, amount, custom=false) {
+        this.canvas = document.getElementById(canvas_id);
         this.c = this.canvas.getContext('2d');
         this.frame = frame;
         this.canvas.width = this.frame.width;
@@ -217,10 +237,19 @@ class Simulations{
         this.timer = {
             'run': false,
             'time': undefined,
-            'live': 12000,
+            'life': undefined,
         };
 
-        this.init();
+        this.elements = {
+            'canvas_id': undefined,
+            'box_id': undefined,
+        };
+        this.elements.canvas_id = '#' + canvas_id;
+        this.elements.box_id = this.elements.canvas_id + '-box';
+
+        if(!custom){
+            this.init();
+        }
     }
 
     draw(){
@@ -231,37 +260,42 @@ class Simulations{
 
     linerInit() {
         this.objects = [];
-        let radius = RARIUS,
-            velocity_x, velocity_y = 0,
+        let velocity_x, velocity_y = 0,
             x, y = 25,
             color;
 
         for (let i = 0; i < this.amount; i++) {
             if (i === 0) {
-                velocity_x = randomFloatFromRange(1, 2);
+                velocity_x = 2.5;
                 x = 50;
                 color = colors['sick'];
             } else {
-                velocity_x = -randomFloatFromRange(0.5, 1)/10;
+                velocity_x = -Math.random()/10;
                 x = 50 + i * (this.frame.width - 50)/this.amount;
                 color = colors['health'];
-
-
             }
-            this.objects.push(new this.Object(x, y, velocity_x, velocity_y, radius, color, this.c, this.frame));
+
+            this.objects.push(new this.Object(x, y, velocity_x, velocity_y, RARIUS, color, this.c, this.frame));
         }
 
         this.draw();
+        this.timer.life = 7000;
     }
 
-    squareInit() {
+    squareDefaultInit() {
+        let _sicked_amount = randomIntFromRange(0, 3);
+        this.objectsInit(8, 8, -2.5, 2.5, this.amount, 16000, _sicked_amount);
+
+    }
+
+    objectsInit(r1, r2, v1, v2, amount, animating_time, _sicked_amount){
         this.objects = [];
-        let radius = RARIUS,
+        let radius,
             velocity_x, velocity_y,
             x, y,
             color;
 
-        let _sicked_amount = randomIntFromRange(0, 3);
+        this.amount = amount;
 
         for (let i = 0; i < this.amount; i++) {
             if (i <= _sicked_amount) {
@@ -269,9 +303,10 @@ class Simulations{
             } else {
                 color = colors['health'];
             }
+            radius = randomIntFromRange(r1, r2);
 
-            velocity_x = randomFloatFromRange(0, 2.5) - 1.25;
-            velocity_y = randomFloatFromRange(0, 2.5) - 1.25;
+            velocity_x = randomFloatFromRange(v1, v2);
+            velocity_y = randomFloatFromRange(v1, v2);
             x = randomIntFromRange(radius, this.frame.width - radius);
             y = randomIntFromRange(radius, this.frame.height - radius);
 
@@ -287,6 +322,7 @@ class Simulations{
         }
 
         this.draw();
+        this.timer.life = animating_time;
     }
 
     init(){
@@ -294,7 +330,7 @@ class Simulations{
             this.linerInit();
         }
         else {
-            this.squareInit();
+            this.squareDefaultInit();
         }
     }
 
@@ -309,51 +345,168 @@ class Simulations{
             object.update(this.objects)
         });
     }
+
     checkTime(){
         let current = new Date();
-        return (current - this.timer.time - this.timer.live >= 0)
+        return (current - this.timer.time - this.timer.life >= 0)
     }
 }
-let simulations = [];
-let liner = new Simulations('simulation1', Particle, frame1, 8);
-//let recovered_simulation = new Simulations('simulation2', RecoveredParticle, frame1, 8);
-//let square_simulation = new Simulations('simulation3', RecoveredParticle, frame2, 70);
+
+let animating = [];
+let liner_ = new Simulations('liner-simulation', Particle, frame1, 8);
+let liner_covered = new Simulations('liner-covered-simulation', RecoveredParticle, frame1, 8);
+let square_ = new Simulations('square-simulation', Particle, frame2, 100);
+let square_covered= new Simulations('square-covered-simulation', RecoveredParticle, frame2, 100);
+let lifeless= new Simulations('lifeless-simulation', LifeParticle, frame2, 100);
+
+let custom= new Simulations('custom-simulation', LifeParticle, frame3, 100, true);
+
+let simulations = [
+    {
+        'element': 'liner-simulation',
+        'obj': liner_
+    },
+    {
+        'element': 'liner-covered-simulation',
+         'obj': liner_covered
+    },
+    {
+        'element': 'square-simulation',
+         'obj': square_
+    },
+    {
+        'element': 'square-covered-simulation',
+        'obj': square_covered,
+    },
+    {
+        'element': 'lifeless-simulation',
+        'obj': lifeless,
+    },
+    {
+        'element': 'custom-simulation',
+        'obj': custom,
+    },
+];
 
 
-$(document).ready(function(){
-    $("#s1, #s2, #s3").click(function(){
-        if($(this).text() === 'Start'){
-            let obj;
-            switch ($(this).attr('id')) {
-                case 's1': obj = liner; break;
-                //case 's2': obj = recovered_simulation; break;
-               // case 's3': obj = square_simulation; break;
-            }
-            simulations.push(obj);
-            $(this).text("Stop") ;
+
+function Controller(){
+
+    this.amount = 100;
+    this.sicked_amount = 2;
+    this.animating_time = 15000;
+
+    this.velocity_start = -2.5;
+    this.velocity_end = 2.5;
+    this.radius = 8;
+    this.radius_random = false;
+
+    this.run = function () {
+        let r1;
+        if(this.radius_random){
+            r1 = 4;
         }
-        else{
-            simulations[0].timer.run = false;
-            simulations.pop();
-            $(this).text("Start") ;
+        else {
+            r1 = this.radius;
+        }
+
+        custom.objectsInit(
+            r1,
+            this.radius,
+            this.velocity_start,
+            this.velocity_end,
+            this.amount,
+            this.animating_time,
+            this.sicked_amount);
+        animating.push(custom);
+        $(custom.elements.canvas_id).removeClass('fadeout');
+    };
+    this.pause = function () {
+        if(animating.length){
+            animating[0].timer.run = false;
+            $(animating[0].elements.canvas_id).addClass('fadeout');
+
+            animating.pop();
+        }
+    }
+}
+
+let gui = new dat.GUI({
+    autoPlace: false,
+    load: JSON,
+});
+
+let customContainer = document.getElementById('controller');
+customContainer.appendChild(gui.domElement);
+
+let controller = new Controller();
+
+let f1 = gui.addFolder('Controllers');
+f1.add(controller, 'amount', 2, 200);
+f1.add(controller, 'sicked_amount', 0, 100);
+f1.add(controller, 'animating_time', 5000, 100000);
+f1.open();
+
+let f2 = gui.addFolder('Parameters');
+f2.add(controller, 'velocity_start', -10, 10);
+f2.add(controller, 'velocity_end', -10, 10);
+f2.add(controller, 'radius', 4, 50);
+f2.add(controller, 'radius_random');
+f2.open();
+let f3 = gui.addFolder('Active');
+f3.add(controller, 'run');
+f3.add(controller, 'pause');
+f3.open();
+
+gui.remember(controller);
+
+$('.box-replay').click(function(){
+    if(animating.length){
+        animating[0].timer.run = false;
+        $(animating[0].elements.box_id).show();
+        $(animating[0].elements.canvas_id).addClass('fadeout');
+
+        animating.pop();
+    }
+
+    let canvas_id = $(this).siblings('canvas').attr('id');
+    simulations.forEach(simulate => {
+        if(simulate.element === canvas_id){
+            simulate.obj.init();
+            $(simulate.obj.elements.box_id).hide();
+            $(simulate.obj.elements.canvas_id).removeClass('fadeout');
+            animating.push(simulate.obj);
         }
     });
-});
-const gui = new dat.GUI();
+
+
+ });
+
+
 
 // Animation Loop
 function animate() {
   requestAnimationFrame(animate);
 
-  simulations.forEach(simulation => {
-    simulation.update();
-    if(simulation.checkTime()){
-        simulations[0].timer.run = false;
-        simulations.pop();
+  animating.forEach(obj => {
+    obj.update();
+
+    if(obj.checkTime()){
+        obj.timer.run = false;
+
+        $(document).ready(function(){
+            $(obj.elements.box_id).show();
+            $(obj.elements.canvas_id).addClass('fadeout');
+        });
+
+        animating.pop();
     }
+
   });
 }
 
 animate();
+
+
 
 
