@@ -1,2 +1,2 @@
-web: gunicorn myproject.wsgi --log-file -
+web: gunicorn covid.wsgi --log-file -
 release: python manage.py migrate
