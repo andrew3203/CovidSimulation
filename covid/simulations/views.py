@@ -3,7 +3,7 @@ from django.http import JsonResponse
 
 import pandas as pd
 
-df = pd.read_csv('/Users/kuand/Desktop/Projects/Covid/covid/applemobilitytrends-2020-04-13.csv')
+df = pd.read_csv('/Users/kuand/Desktop/Projects/Covid/covid/simulations/static/activity.csv')
 
 
 def get_all_regions(request):
