@@ -31,7 +31,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'wi4$0af_$)*&spw4_4geit1*k(4j26
 
 DEBUG = bool(os.environ.get('DJANGO_DEBUG', True))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['covid-simulation.herokuapp.com', '127.0.0.1']
 
 # Application definition
 
