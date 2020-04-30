@@ -1,9 +1,14 @@
+from .models import Information
+
 from django.shortcuts import render
 from django.http import JsonResponse
 
 import pandas as pd
 
-df = pd.read_csv('/Users/kuand/Desktop/Projects/Covid/covid/simulations/static/activity.csv')
+
+url = "https://covid19-static.cdn-apple.com/covid19-mobility-data/2006HotfixDev17/v1/en-us/applemobilitytrends-2020-04-25.csv"
+#url = os.environ.get('DATA_URL', url)
+df = pd.read_csv('/Users/kuand/Desktop/Projects/Covid/activity.csv')
 
 
 def get_all_regions(request):
@@ -46,8 +51,17 @@ def get_hist_data(request):
     return JsonResponse(data, safe=False)
 
 
-def check_notifications(request):
-    return render(request, 'main.html')
+def get_page(request):
+    obj = Information.objects.filter(id=2).first()
+
+    data = {
+        'error': 1,
+    }
+    if obj is not None:
+        data['data'] = obj.get_data()
+        data['error'] = 0
+
+    return render(request, 'main.html', data)
 
 def covid_map(request):
     return render(request, 'map.html')

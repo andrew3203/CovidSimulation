@@ -40,7 +40,7 @@
         <div class="row tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="covid" role="tabpanel" aria-labelledby="home-tab">
                 <p class="p-3 col-10">
-                    It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+                    {{ data.liner_title }}
                 </p>
                 <div class="row pt-2 pb-2 box">
                     <div class="col-1"></div>
@@ -51,7 +51,7 @@
                     </div>
                 </div>
                 <p class="col-10">
-                    In nec dolor et augue luctus vestibulum ac vitae elit. Sed cursus lacinia erat, non aliquam lectus gravida nec. Curabitur id lacus at turpis faucibus porta. Phasellus id mauris turpis. Aenean nulla enim, maximus imperdiet ultrices eu, suscipit et orci. Ut ut odio lorem. Integer facilisis ullamcorper metus, efficitur dapibus nulla sodales vel. Morbi quis mattis ex, id ullamcorper arcu. Morbi in hendrerit eros. Nulla imperdiet turpis at dolor volutpat, et blandit leo lobortis. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aenean efficitur est eu ullamcorper iaculis. Morbi dignissim finibus tortor id lobortis. Sed fringilla eros vel purus dapibus faucibus.
+                    {{ data.liner_covered_title }}
                 </p>
                 <div class="row pt-2 pb-2 box">
                     <div class="col-1"></div>
@@ -62,7 +62,7 @@
                     </div>
                 </div>
                 <p class="col-10">
-                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                    {{ data.square_covered_title }}
                 </p>
                 <div class="row pt-2 pb-2 box">
                     <div class="col-1"></div>
@@ -73,7 +73,7 @@
                     </div>
                 </div>
                 <p class="col-10">
-                    Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
+                    {{ data.lifeless_title }}
                 </p>
                 <div class="row pt-2 pb-2 box">
                     <div class="col-1"></div>
@@ -84,7 +84,7 @@
                     </div>
                 </div>
                 <p class="col-10">
-                    Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
+                    {{ data.quarantine_title }}
                 </p>
                 <div class="row pt-2 pb-2 box">
                     <div class="col-1"></div>
@@ -95,28 +95,25 @@
                     </div>
                 </div>
                 <p class="col-10">
-                    Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
+                    {{ data.down1_title }}
                 </p>
 
             </div>
             <div class="tab-pane fade" id="custom" role="tabpanel" aria-labelledby="custom-tab">
                 <p class="col-10">
-                    <strike>Lorem Ipsum</strike> is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                        {{ data.custom_title }}
                 </p>
                 <div class="row pt-2 pb-2 box">
                     <canvas id="custom-simulation" class="fadeout"></canvas>
                     <div id="controller" class=""></div>
                 </div>
                 <p class="col-10">
-                    Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
+                    {{ data.custom_down_title }}
                 </p>
             </div>
             <div class="tab-pane fade" id="activity" role="tabpanel" aria-labelledby="activity-tab">
                 <div class="p-3">
-                <b>Charts on this site show a relative volume of directions requests per country egion or city </b>
-                compared to a baseline volume on January 13th, 2020.
-                 Cities represent usage in greater metropolitan areas and are stably defined during this period. In many countries/regions and cities, relative volume has increased since January 13th, consistent with normal, seasonal usage of Apple Maps.
-                Data that is sent from users’ devices to the Maps service is associated with random, rotating identifiers.
+                {{ data.activity_title }}
                 </div>
                 <div class="row pt-2">
                     <div class="search_box col-8 offset-md-1">
@@ -131,12 +128,13 @@
             </div>
             <div class="tab-pane fade" id="resources" role="tabpanel" aria-labelledby="resources-tab">
                 <div class="p-3">
-                    Lorem Ipsum is simply text of printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                    {{ data.resources }}
                 </div>
             </div>
 
         </div>
     </div>
+
 <!--JQuery -->
 <script   src="https://code.jquery.com/jquery-3.4.1.js"   integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="   crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
