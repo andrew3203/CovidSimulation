@@ -478,7 +478,7 @@ function Controller(){
         animating.push(custom);
         $(custom.elements.canvas_id).removeClass('fadeout');
     };
-    this.pause = function () {
+    this.stop = function () {
         if(animating.length){
             animating[0].timer.run = false;
             $(animating[0].elements.canvas_id).addClass('fadeout');
@@ -514,10 +514,9 @@ f2.open();
 
 let f3 = gui.addFolder('Active');
 f3.add(controller, 'run');
-f3.add(controller, 'pause');
+f3.add(controller, 'stop');
 f3.open();
 
-gui.remember(controller);
 
 $('.box-replay').click(function(){
     if(animating.length){
