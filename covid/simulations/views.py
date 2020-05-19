@@ -52,7 +52,8 @@ def get_hist_data(request):
 
 
 def get_page(request):
-    obj = Information.objects.filter(id=2).first()
+    obj = Information.objects.latest('id')
+    #obj = Information.objects.filter(id=2).first()
 
     data = {
         'error': 1,

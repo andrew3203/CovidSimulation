@@ -2,7 +2,5 @@ django
 gunicorn
 pandas
 dj-database-url
-psycopg2
 whitenoise
-requests
-django-heroku
+
