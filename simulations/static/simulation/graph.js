@@ -1,6 +1,10 @@
 let regions = undefined;
 let $result = undefined;
 
+let alReg_url = document.location.href.replace('#', '') + 'get_all_regions/';
+let histGata_url = document.location.href.replace('#', '') + 'get_hist_data/';
+
+
 
 $(document).ready(function() {
 	$result = $('#search_box-result');
@@ -36,7 +40,6 @@ $(document).ready(function() {
 });
 
 function sendResp(element) {
-	console.log($(element).text());
 	$result.html('');
 	$result.fadeOut(100);
 	plot($(element).text())
@@ -50,7 +53,7 @@ function plot(name) {
     });
     $.ajax({
         type: "GET",
-        url: 'http://127.0.0.1:8000/get_hist_data/',
+        url: histGata_url,
         dataType: 'json',
         data: {'search': name},
         success: function(json_data){
@@ -136,7 +139,7 @@ function plot(name) {
 
 
 $.ajax({
-    url: 'http://127.0.0.1:8000/get_all_regions/',
+    url: alReg_url,
     dataType: 'json',
     success: function (json_data) {
         regions = json_data;
