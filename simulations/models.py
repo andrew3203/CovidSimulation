@@ -38,5 +38,3 @@ class Information(models.Model):
             'resources': self.resources,
 
         }
-
-
