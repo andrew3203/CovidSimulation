@@ -3,4 +3,4 @@ gunicorn
 pandas
 dj-database-url
 whitenoise
-
+django_heroku
