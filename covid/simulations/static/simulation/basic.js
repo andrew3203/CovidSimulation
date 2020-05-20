@@ -10,13 +10,15 @@ const frame2 = {
 };
 const frame3 = {
     'width': 800,
-    'height': 600,
+    'height': 500,
 };
 
 let sic = 0;
 let rec = 0;
 let die = 0;
+
 window.graphs = {};
+
 const RARIUS = 10;
 const colors = {
     'sick': ['sick', '#b72e3e'],
@@ -26,28 +28,25 @@ const colors = {
     'qur': ['qur', '#fff722']
 };
 
-
-
-let time = 0;
 let config = {
     type: 'line',
     data: {
-        labels: [0],
+        labels: [],
         datasets: [{
-            label: 'Sicked',
+            label: 'Заболело',
             borderColor: 'rgb(183, 46, 62)',
             backgroundColor: 'rgb(183, 46, 62)',
-            data: [0],
+            data: [],
         },{
-            label: 'Recovered',
+            label: 'Выздоровело',
             borderColor: 'rgb(185, 57, 211)',
             backgroundColor: 'rgb(185, 57, 211)',
-            data: [0],
+            data: [],
         },{
-            label: 'Died',
+            label: 'Умерло',
             borderColor: 'rgb(7, 7, 14)',
             backgroundColor: 'rgb(7, 7, 14)',
-            data: [0],
+            data: [],
         }]
     },
     options: {
@@ -239,6 +238,8 @@ class RecoveredParticle extends Particle{
         if(this.color[0] === 'sick' && (current - this.sicked_time - this.time_to_recover) >= 0){
             this.color = colors.recover;
             rec +=1;
+            sic -=1;
+
         }
     }
 
@@ -276,6 +277,7 @@ class LifeParticle extends RecoveredParticle{
         if(this.color[0] === 'sick' && (current - this.sicked_time - this.time_to_death) >= 0){
             this.color = colors.dead;
             die +=1;
+            sic -=1;
             this.velocity.x = 0;
             this.velocity.y = 0;
             this.radius = Math.floor(this.radius / 2);
@@ -353,7 +355,7 @@ class Simulations{
                 velocity_x = 2.5;
                 x = 50;
                 color = colors['sick'];
-                this.sic+=1;
+                sic += 1;
             } else {
                 velocity_x = -Math.random()/10;
                 x = 50 + i * (this.frame.width - 50)/this.amount;
@@ -369,7 +371,7 @@ class Simulations{
 
     squareDefaultInit() {
         let _sicked_amount = randomIntFromRange(1, 3);
-        let quarantines = this.Object === QuarantineParticle ? randomIntFromRange(8, 12): 0;
+        let quarantines = this.Object === QuarantineParticle ? randomIntFromRange(10, 14): 0;
         this.objectsInit(5, 5, -2, 2, this.amount, 16000, _sicked_amount, quarantines);
     }
 
@@ -408,7 +410,7 @@ class Simulations{
                 if(sicked_left > 0){
                     color = colors['sick'];
                     sicked_left -=1;
-                    this.sic+=1;
+                    sic += 1;
                 }
                 else{
                     color = colors['health'];
@@ -494,33 +496,27 @@ class Simulations{
 
 
 let animating = [];
-let liner_ = new Simulations('liner-simulation', Particle, frame1, 8);
-let liner_covered = new Simulations('liner-covered-simulation', RecoveredParticle, frame1, 8);
-let square_covered= new Simulations('square-covered-simulation', RecoveredParticle, frame2, 120);
-let lifeless = new Simulations('lifeless-simulation', LifeParticle, frame2, 120);
-let quarantine_sim = new Simulations('quarantine-simulation', QuarantineParticle, frame2, 120);
 let custom = new Simulations('custom-simulation', QuarantineParticle, frame3, 120, true);
-
 let simulations = [
     {
         'element': 'liner-simulation',
-        'obj': liner_
+        'obj': new Simulations('liner-simulation', Particle, frame1, 8),
     },
     {
         'element': 'liner-covered-simulation',
-         'obj': liner_covered
+         'obj': new Simulations('liner-covered-simulation', RecoveredParticle, frame1, 8)
     },
     {
         'element': 'square-covered-simulation',
-        'obj': square_covered,
+        'obj': new Simulations('square-covered-simulation', RecoveredParticle, frame2, 120),
     },
     {
         'element': 'lifeless-simulation',
-        'obj': lifeless,
+        'obj': new Simulations('lifeless-simulation', LifeParticle, frame2, 120),
     },
     {
         'element': 'quarantine-simulation',
-         'obj': quarantine_sim,
+         'obj': new Simulations('quarantine-simulation', QuarantineParticle, frame2, 120),
     },
     {
         'element': 'custom-simulation',
@@ -544,6 +540,13 @@ function Controller(){
     this.radius_random = false;
 
     this.run = function () {
+
+        config.data.labels = [0];
+        config.data.datasets.forEach(each_set =>{
+            each_set.data = [0]
+        })
+        setParamsNull();
+
         let r1;
         if(this.radius_random){
             r1 = 4;
@@ -618,6 +621,7 @@ window.onload = function() {
 $('.box-replay').click(function(){
     // pop the old one
     setStop(animating);
+    setParamsNull();
 
     config.data.labels = [0];
     config.data.datasets.forEach(each_set =>{
@@ -630,7 +634,6 @@ $('.box-replay').click(function(){
             simulate.obj.init();
             $(simulate.obj.elements.box_id).hide();
             $(simulate.obj.elements.canvas_id).removeClass('fadeout');
-            setParamsNull();
             animating.push(simulate.obj);
         }
     });
@@ -641,23 +644,12 @@ $('.box-replay').click(function(){
 // Animation Loop
 function animate() {
   requestAnimationFrame(animate);
-
   animating.forEach(obj => {
-    obj.update();
-
-    // if no time left -> pop
-    if(obj.checkTime()){
-        obj.timer.run = false;
-
-        // show replay
-        setStop(animating);
-    }
-
+      obj.update();
+      if(obj.checkTime()){
+          setStop(animating);
+      }
   });
 }
 
 animate();
-
-
-
-
