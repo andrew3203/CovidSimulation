@@ -6,9 +6,8 @@ from django.http import JsonResponse
 import pandas as pd
 
 
-url = "https://covid19-static.cdn-apple.com/covid19-mobility-data/2006HotfixDev17/v1/en-us/applemobilitytrends-2020-04-25.csv"
 #url = os.environ.get('DATA_URL', url)
-df = pd.read_csv('/Users/kuand/Desktop/Projects/Covid/activity.csv')
+df = pd.read_csv('/Users/kuand/Desktop/Projects/CovidSimulation/simulations/static/activity.csv')
 
 
 def get_all_regions(request):
