@@ -497,6 +497,7 @@ class Simulations{
 
 let animating = [];
 let custom = new Simulations('custom-simulation', QuarantineParticle, frame3, 120, true);
+
 let simulations = [
     {
         'element': 'liner-simulation',
@@ -610,8 +611,9 @@ f3.open();
 
 window.onload = function() {
     simulations.forEach(simulate =>{
-        var graph_name = simulate.element + '-graph';
+        let graph_name = simulate.element + '-graph';
         let ctx = document.getElementById(graph_name).getContext('2d');
+        config.options.title.text = graph_name.replace(/-/g, ' ')
         window.graphs[graph_name] = new Chart(ctx, config);
     })
 
@@ -620,6 +622,7 @@ window.onload = function() {
 // start/stop
 $('.box-replay').click(function(){
     // pop the old one
+
     setStop(animating);
     setParamsNull();
 
