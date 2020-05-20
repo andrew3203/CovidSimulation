@@ -7,7 +7,7 @@ import pandas as pd
 
 
 #url = os.environ.get('DATA_URL', url)
-df = pd.read_csv('/Users/kuand/Desktop/Projects/CovidSimulation/simulations/static/activity.csv')
+df = pd.read_csv('simulations/static/activity.csv')
 
 
 def get_all_regions(request):
