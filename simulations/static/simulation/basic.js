@@ -9,8 +9,8 @@ const frame2 = {
     'height': 400,
 };
 const frame3 = {
-    'width': 800,
-    'height': 500,
+    'width': 880,
+    'height': 380,
 };
 
 let sic = 0;

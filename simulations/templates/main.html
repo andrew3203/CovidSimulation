@@ -43,16 +43,18 @@
                 <p class="p-3 col-10">
                     {{ data.liner_title|safe }}
                 </p>
-                <div class="row pt-2 pb-2 box">
-                    <div class="col-1"></div>
-                    <canvas id="liner-simulation" class="fadeout"></canvas>
-                    <div id="liner-simulation-box" class="box-replay">
-                        <img class="replay" src="{% static 'img/replay.png' %}">
-                        <div class="text-replay">Click to replay </div>
+                <div class="row pt-2 pb-2">
+                    <div class="box">
+                        <div class="col-1"></div>
+                        <canvas id="liner-simulation" class="fadeout"></canvas>
+                        <div id="liner-simulation-box" class="box-replay">
+                            <img class="replay" src="{% static 'img/replay.png' %}">
+                            <div class="text-replay">Click to replay </div>
+                        </div>
                     </div>
                 </div>
                 <div class="row pt-2 pb-2">
-                    <div class="col-10">
+                    <div class="col-10 graph-box">
                         <canvas id="liner-simulation-graph" height="100"></canvas>
                     </div>
                 </div>
@@ -60,16 +62,18 @@
                 <p class="col-10">
                     {{ data.liner_covered_title|safe }}
                 </p>
-                <div class="row pt-2 pb-2 box">
-                    <div class="col-1"></div>
-                    <canvas id="liner-covered-simulation" class="fadeout"></canvas>
-                    <div id="liner-covered-simulation-box" class="box-replay">
-                        <img class="replay" src="{% static 'img/replay.png' %}">
-                        <div class="text-replay">Click to replay </div>
+                <div class="row pt-2 pb-2">
+                    <div class="box">
+                        <div class="col-1"></div>
+                        <canvas id="liner-covered-simulation" class="fadeout"></canvas>
+                        <div id="liner-covered-simulation-box" class="box-replay">
+                            <img class="replay" src="{% static 'img/replay.png' %}">
+                            <div class="text-replay">Click to replay </div>
+                        </div>
                     </div>
                 </div>
                 <div class="row pt-2 pb-2">
-                    <div class="col-10">
+                    <div class="col-10 graph-box">
                         <canvas id="liner-covered-simulation-graph" height="100"></canvas>
                     </div>
                 </div>
@@ -77,16 +81,18 @@
                 <p class="col-10">
                     {{ data.square_covered_title|safe }}
                 </p>
-                <div class="row pt-2 pb-2 box">
-                    <div class="col-1"></div>
-                    <canvas id="square-covered-simulation" class="fadeout"></canvas>
-                    <div id="square-covered-simulation-box" class="box-replay">
-                        <img class="replay" src="{% static 'img/replay.png' %}">
-                        <div class="text-replay">Click to replay </div>
+                <div class="row pt-2 pb-2">
+                    <div class="box">
+                        <div class="col-1"></div>
+                        <canvas id="square-covered-simulation" class="fadeout"></canvas>
+                        <div id="square-covered-simulation-box" class="box-replay">
+                            <img class="replay" src="{% static 'img/replay.png' %}">
+                            <div class="text-replay">Click to replay </div>
+                        </div>
                     </div>
                 </div>
                 <div class="row pt-2 pb-2">
-                    <div class="col-10">
+                    <div class="col-10 graph-box">
                         <canvas id="square-covered-simulation-graph" height="100"></canvas>
                     </div>
                 </div>
@@ -94,16 +100,18 @@
                 <p class="col-10">
                     {{ data.lifeless_title|safe }}
                 </p>
-                <div class="row pt-2 pb-2 box">
-                    <div class="col-1"></div>
-                    <canvas id="lifeless-simulation" class="fadeout"></canvas>
-                    <div id="lifeless-simulation-box" class="box-replay">
-                        <img class="replay" src="{% static 'img/replay.png' %}">
-                        <div class="text-replay">Click to replay </div>
+                <div class="row pt-2 pb-2">
+                    <div class="box">
+                        <div class="col-1"></div>
+                        <canvas id="lifeless-simulation" class="fadeout"></canvas>
+                        <div id="lifeless-simulation-box" class="box-replay">
+                            <img class="replay" src="{% static 'img/replay.png' %}">
+                            <div class="text-replay">Click to replay </div>
+                        </div>
                     </div>
                 </div>
                 <div class="row pt-2 pb-2">
-                    <div class="col-10">
+                    <div class="col-10 graph-box">
                         <canvas id="lifeless-simulation-graph" height="100"></canvas>
                     </div>
                 </div>
@@ -111,34 +119,39 @@
                 <p class="col-10">
                     {{ data.quarantine_title|safe }}
                 </p>
-                <div class="row pt-2 pb-2 box">
-                    <div class="col-1"></div>
-                    <canvas id="quarantine-simulation" class="fadeout"></canvas>
-                    <div id="quarantine-simulation-box" class="box-replay">
-                        <img class="replay" src="{% static 'img/replay.png' %}">
-                        <div class="text-replay">Click to replay </div>
+                <div class="row pt-2 pb-2">
+                    <div class="box">
+                        <div class="col-1"></div>
+                        <canvas id="quarantine-simulation" class="fadeout"></canvas>
+                        <div id="quarantine-simulation-box" class="box-replay">
+                            <img class="replay" src="{% static 'img/replay.png' %}">
+                            <div class="text-replay">Click to replay </div>
+                        </div>
                     </div>
                 </div>
                 <div class="row pt-2 pb-2">
-                    <div class="col-10">
+                    <div class="col-10 graph-box">
                         <canvas id="quarantine-simulation-graph" height="100"></canvas>
                     </div>
                 </div>
                 <p class="col-10">
                     {{ data.down1_title|safe }}
                 </p>
+
             </div>
 
             <div class="tab-pane fade" id="custom" role="tabpanel" aria-labelledby="custom-tab">
+
                 <p class="col-10">
                     {{ data.custom_title|safe }}
                 </p>
                 <div class="row pt-2 pb-2">
-                    <div class="col-10">
+                    <div class="col-10 graph-box">
                         <canvas id="custom-simulation-graph" height="100"></canvas>
                     </div>
                 </div>
-                <div class="row pt-2 pb-2 box">
+                <br>
+                <div class="row pt-2 pb-2 ml-4">
                     <canvas id="custom-simulation"></canvas>
                     <div id="controller" class=""></div>
                 </div>

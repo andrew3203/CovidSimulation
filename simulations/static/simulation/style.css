@@ -7,10 +7,14 @@ canvas{
 }
 .box-replay{
     display: block;
-    position: relative;
-    right: 40%;
+    position: absolute;
+    right: 45%;
     top: 3px;
     height: 55px;
+}
+.box{
+    position: relative;
+    right: -9%;
 }
 .replay{
     position: relative;
@@ -29,6 +33,9 @@ canvas{
 .chow-replay-box{
     display: block;
 }
-.graph-smpl{
-    height: 40px;
+.graph-box{
+    right: -25px;
+}
+#hist{
+    right: -30px;
 }
