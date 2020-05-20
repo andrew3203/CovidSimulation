@@ -13,25 +13,89 @@ const frame3 = {
     'height': 600,
 };
 
+let sic = 0;
+let rec = 0;
+let die = 0;
+window.graphs = {};
 const RARIUS = 10;
 const colors = {
-    'sick': ['sick', '#B72E3E'],
+    'sick': ['sick', '#b72e3e'],
     'health': ['health', '#259238'],
-    'recover': ['recover', '#B939D3'],
-    'dead': ['dead', '#07070E'],
+    'recover': ['recover', '#b939d3'],
+    'dead': ['dead', '#07070e'],
     'qur': ['qur', '#fff722']
 };
 
-function setPauseOn(interval) {
-    let start = new Date();
 
-    while (true){
-        let current = new Date();
-        if(current - interval - start >= 0){
-            return 0;
+
+let time = 0;
+let config = {
+    type: 'line',
+    data: {
+        labels: [0],
+        datasets: [{
+            label: 'Sicked',
+            borderColor: 'rgb(183, 46, 62)',
+            backgroundColor: 'rgb(183, 46, 62)',
+            data: [0],
+        },{
+            label: 'Recovered',
+            borderColor: 'rgb(185, 57, 211)',
+            backgroundColor: 'rgb(185, 57, 211)',
+            data: [0],
+        },{
+            label: 'Died',
+            borderColor: 'rgb(7, 7, 14)',
+            backgroundColor: 'rgb(7, 7, 14)',
+            data: [0],
+        }]
+    },
+    options: {
+        responsive: true,
+        title: {
+            display: true,
+            text: 'Dynamics of virus spread'
+        },
+        tooltips: {
+            mode: 'index',
+        },
+        hover: {
+            mode: 'index'
+        },
+        scales: {
+            x: {
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Time'
+                }
+                },
+            y: {
+                stacked: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Amount'
+                }
+            }
         }
     }
+};
 
+
+function setStop(animating) {
+    if(animating.length){
+        animating[0].timer.run = false;
+        $(animating[0].elements.box_id).show();
+        $(animating[0].elements.canvas_id).addClass('fadeout');
+
+        animating.pop();
+        setParamsNull();
+    }
+}
+
+function setParamsNull() {
+    sic = 0;
+    rec = 0;
+    die = 0;
 }
 
 function randomFloatFromRange(min, max) {
@@ -125,9 +189,11 @@ class Particle {
     _checkSick(particle){
         if(particle.color[0] === 'sick' && this.color[0] === 'health'){
                 this.color = colors.sick;
+                sic+=1;
             }
         if(this.color[0] === 'sick' && particle.color[0] === 'health'){
             particle.color = colors.sick;
+            sic+=1;
         }
     }
 
@@ -172,16 +238,19 @@ class RecoveredParticle extends Particle{
 
         if(this.color[0] === 'sick' && (current - this.sicked_time - this.time_to_recover) >= 0){
             this.color = colors.recover;
+            rec +=1;
         }
     }
 
     _checkSick(particle) {
         if(particle.color[0] === 'sick' && (this.color[0] === 'health' || this.color[0] ===  'qur')){
                 this.color = colors.sick;
+                sic+=1;
                 this.sicked_time = new Date();
             }
         if(this.color[0] === 'sick' && (particle.color[0] === 'health' || particle.color[0] ===  'qur')){
             particle.color = colors.sick;
+            sic+=1;
             particle.sicked_time = new Date();
         }
 
@@ -206,6 +275,7 @@ class LifeParticle extends RecoveredParticle{
         let current = new Date();
         if(this.color[0] === 'sick' && (current - this.sicked_time - this.time_to_death) >= 0){
             this.color = colors.dead;
+            die +=1;
             this.velocity.x = 0;
             this.velocity.y = 0;
             this.radius = Math.floor(this.radius / 2);
@@ -232,6 +302,7 @@ class QuarantineParticle extends LifeParticle{
         super.move();
     }
 }
+
 class Simulations{
 
     constructor(canvas_id, Object, frame, amount, custom=false) {
@@ -241,26 +312,24 @@ class Simulations{
         this.canvas.width = this.frame.width;
         this.canvas.height = this.frame.height;
 
+        this.elements = {
+            'canvas_id': undefined,
+            'box_id': undefined,
+            'graph_id': undefined,
+        };
+        this.elements.canvas_id = '#' + canvas_id;
+        this.elements.box_id = this.elements.canvas_id + '-box';
+        this.elements.graph_id = canvas_id + '-graph';
+
         this.Object = Object;
         this.objects = [];
-
         this.amount = amount;
-        //this.sicked = 0;
-        //this.recovered = 0;
-        //this.died = 0;
 
         this.timer = {
             'run': false,
             'time': undefined,
             'life': undefined,
         };
-
-        this.elements = {
-            'canvas_id': undefined,
-            'box_id': undefined,
-        };
-        this.elements.canvas_id = '#' + canvas_id;
-        this.elements.box_id = this.elements.canvas_id + '-box';
 
         if(!custom){
             this.init();
@@ -284,6 +353,7 @@ class Simulations{
                 velocity_x = 2.5;
                 x = 50;
                 color = colors['sick'];
+                this.sic+=1;
             } else {
                 velocity_x = -Math.random()/10;
                 x = 50 + i * (this.frame.width - 50)/this.amount;
@@ -338,6 +408,7 @@ class Simulations{
                 if(sicked_left > 0){
                     color = colors['sick'];
                     sicked_left -=1;
+                    this.sic+=1;
                 }
                 else{
                     color = colors['health'];
@@ -399,6 +470,20 @@ class Simulations{
         this.objects.forEach(object => {
             object.update(this.objects)
         });
+
+        let time = new Date();
+        time -= this.timer.time;
+        if(time%100 < 20){
+            time /=1000;
+            config.data.labels.push(time.toFixed(1));
+
+            config.data.datasets[0].data.push(sic);
+            config.data.datasets[1].data.push(rec);
+            config.data.datasets[2].data.push(die);
+
+            window.graphs[this.elements.graph_id].update();
+        }
+
     }
 
     checkTime(){
@@ -406,6 +491,7 @@ class Simulations{
         return (current - this.timer.time - this.timer.life >= 0)
     }
 }
+
 
 let animating = [];
 let liner_ = new Simulations('liner-simulation', Particle, frame1, 8);
@@ -443,7 +529,7 @@ let simulations = [
 ];
 
 
-
+// custom start
 function Controller(){
 
     this.amount = 100;
@@ -516,23 +602,35 @@ let f3 = gui.addFolder('Active');
 f3.add(controller, 'run');
 f3.add(controller, 'stop');
 f3.open();
+// custom end
 
 
+window.onload = function() {
+    simulations.forEach(simulate =>{
+        var graph_name = simulate.element + '-graph';
+        let ctx = document.getElementById(graph_name).getContext('2d');
+        window.graphs[graph_name] = new Chart(ctx, config);
+    })
+
+};
+
+// start/stop
 $('.box-replay').click(function(){
-    if(animating.length){
-        animating[0].timer.run = false;
-        $(animating[0].elements.box_id).show();
-        $(animating[0].elements.canvas_id).addClass('fadeout');
+    // pop the old one
+    setStop(animating);
 
-        animating.pop();
-    }
-
+    config.data.labels = [0];
+    config.data.datasets.forEach(each_set =>{
+        each_set.data = [0]
+    })
+    // push new one
     let canvas_id = $(this).siblings('canvas').attr('id');
     simulations.forEach(simulate => {
         if(simulate.element === canvas_id){
             simulate.obj.init();
             $(simulate.obj.elements.box_id).hide();
             $(simulate.obj.elements.canvas_id).removeClass('fadeout');
+            setParamsNull();
             animating.push(simulate.obj);
         }
     });
@@ -547,15 +645,12 @@ function animate() {
   animating.forEach(obj => {
     obj.update();
 
+    // if no time left -> pop
     if(obj.checkTime()){
         obj.timer.run = false;
 
-        $(document).ready(function(){
-            $(obj.elements.box_id).show();
-            $(obj.elements.canvas_id).addClass('fadeout');
-        });
-
-        animating.pop();
+        // show replay
+        setStop(animating);
     }
 
   });

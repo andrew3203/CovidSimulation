@@ -29,4 +29,6 @@ canvas{
 .chow-replay-box{
     display: block;
 }
-
+.graph-smpl{
+    height: 40px;
+}
