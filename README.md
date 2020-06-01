@@ -2,7 +2,7 @@
  ### There are simulations of Covid-19 distribution:
     1. Simulations of distribution with/withon quarantine
     2. Simulaion of distribution in Moscow
-### If you want to run application on licallhost:
+### If you want to run application on locallhost:
     1. Thirst of all activate your virtualen: 
 `virtualenv --python=python3 venv`
       
