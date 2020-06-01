@@ -8,10 +8,13 @@
 ### If you want to run application on locallhost:
     1. Thirst of all create your virtualen: 
 `virtualenv --python=python3 venv`
+
     2. Then activate your virtualen
 `source venv/bin/activate`
+
     3. After that you need to install the requirements:
 `pip install -r requirements.txt`
+
     4. Then, run tha application with command: 
 `python manage.py runserver`
 
