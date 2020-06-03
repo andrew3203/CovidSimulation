@@ -15,8 +15,8 @@
     3. After that you need to install the requirements:
 `pip install -r requirements.txt`
 
-    4. Then, run tha application with command: 
-`python manage.py runserver`
+    4. Then, run tha application with command (if you are not on django.msu-web.tech you can use any over port): 
+`python manage.py runserver 9000`
 
 --------
 
