@@ -21,8 +21,7 @@
     or if ypu do not wont to see the logs use
 `python manage.py runserver 9000 >> log.log 2>&1`
     
-    5. All logs look up in file log.lo
-
+    5. All logs look up in file log.log
 --------
 
 ###  If you want to look to the working version go to [Cite](https://covid-simulation.herokuapp.com "Cite"). 
