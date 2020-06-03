@@ -17,6 +17,9 @@
 
     4. Then, run tha application with command (if you are not on django.msu-web.tech you can use any over port): 
 `python manage.py runserver 9000`
+
+    or if ypu do not wont to see the logs use
+`python manage.py runserver 9000 >> log.log 2>&1`
     
     5. All logs look up in file log.lo
 
