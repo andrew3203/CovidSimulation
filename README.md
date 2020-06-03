@@ -24,4 +24,7 @@
 
 ### For more details see the Presentation.pdf or Description.pdf
 
+### Permissions:
+Only admins can edit site. If you want to login as administrator look up metodata, after that gо [here](https://covid-simulation.herokuapp.com/admin "here") and login.
+Remember, only the latest row in the database is displayed on the site.
 ------
