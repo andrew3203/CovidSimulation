@@ -17,6 +17,8 @@
 
     4. Then, run tha application with command (if you are not on django.msu-web.tech you can use any over port): 
 `python manage.py runserver 9000`
+    
+    5. All logs look up in file log.lo
 
 --------
 
